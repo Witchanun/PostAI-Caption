@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PostAI - AI Caption Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+    <main class="app">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="logo">
+                PostAI
+            </div>
+
+            <p>
+                แคปรูปสินค้า → วางรูป → ให้ AI คิดแคปชัน
+            </p>
+
+        </header>
+
+
+        <!-- UPLOAD -->
+
+        <section class="upload-section">
+
+            <div id="dropZone" class="drop-zone">
+
+                <div class="upload-icon">
+                    📋
+                </div>
+
+                <h2>
+                    วางรูปสินค้าได้เลย
+                </h2>
+
+                <p>
+                    กด Ctrl + V เพื่อวางรูปจาก Clipboard
+                </p>
+
+                <div class="paste-guide">
+
+                    📸 แคปหน้าจอ
+                    →
+                    Ctrl + C
+                    →
+                    กลับมาที่นี่
+                    →
+                    Ctrl + V
+
+                </div>
+
+
+                <div class="or-text">
+                    หรือ
+                </div>
+
+
+                <label class="upload-button">
+
+                    เลือกรูปจากเครื่อง
+
+                    <input id="imageInput" type="file" accept="image/*" hidden>
+
+                </label>
+
+
+                <small>
+                    รูปจะถูกอ่านจากเครื่องของคุณ
+                </small>
+
+            </div>
+
+
+            <!-- PREVIEW -->
+
+            <div id="previewSection" class="preview-section hidden">
+
+                <div class="preview-header">
+
+                    <h3>
+                        🖼️ รูปสินค้า
+                    </h3>
+
+                    <button id="removeImageBtn" class="secondary-button" type="button">
+                        ลบรูป
+                    </button>
+
+                </div>
+
+
+                <div class="image-wrapper">
+
+                    <img id="previewImage" alt="ตัวอย่างรูปสินค้า">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIONS -->
+
+        <section id="actionsSection" class="actions-section hidden">
+
+            <button id="reelsBtn" class="generate-button" type="button">
+
+                🎬
+                <span>
+                    เจนแคปชัน Reel
+                </span>
+
+            </button>
+
+
+            <button id="facebookBtn" class="generate-button" type="button">
+
+                📱
+                <span>
+                    เจนแคปชันโพสต์
+                </span>
+
+            </button>
+
+        </section>
+
+
+        <!-- LOADING -->
+
+        <section id="loadingSection" class="loading hidden">
+
+            <div class="spinner"></div>
+
+            <p>
+                AI กำลังอ่านข้อมูลจากรูป...
+            </p>
+
+        </section>
+
+
+        <!-- RESULT -->
+
+        <section id="resultSection" class="result-section hidden">
+
+            <div class="result-header">
+
+                <h2>
+                    ✨ ผลลัพธ์
+                </h2>
+
+                <button id="copyBtn" class="secondary-button" type="button">
+                    📋 คัดลอก
+                </button>
+
+            </div>
+
+
+            <textarea id="resultText" readonly placeholder="แคปชันจะแสดงตรงนี้"></textarea>
+
+        </section>
+
+
+        <!-- INFO -->
+
+        <section class="info-section">
+
+            <h3>
+                💡 วิธีใช้
+            </h3>
+
+            <ol>
+
+                <li>
+                    เข้า Shopee
+                </li>
+
+                <li>
+                    แคปหน้าจอสินค้าที่ต้องการ
+                </li>
+
+                <li>
+                    กลับมาที่ PostAI
+                </li>
+
+                <li>
+                    กด Ctrl + V
+                </li>
+
+                <li>
+                    เลือก Reel หรือโพสต์
+                </li>
+
+                <li>
+                    AI อ่านข้อมูลจากภาพแล้วสร้างแคปชัน
+                </li>
+
+            </ol>
+
+        </section>
+
+    </main>
+
+
+    <script type="module" src="script.js"></script>
+
+</body>
+
+</html>
