@@ -1,6 +1,8 @@
 // ==========================================
 // PostAI
-// Main Script
+// Frontend Script
+// Gemini 2.5 Flash
+// Generate Reel + Facebook at once
 // ==========================================
 
 import {
@@ -77,32 +79,34 @@ const copyBtn =
 // STATE
 // ==========================================
 
-let imageData =
-    null;
+let selectedFile = null;
+
+let imageData = null;
 
 
 // ==========================================
 // FILE SELECT
 // ==========================================
 
-imageInput?.addEventListener(
-    "change",
-    event => {
+if (imageInput) {
 
-        const file =
-            event.target.files?.[0];
+    imageInput.addEventListener(
+        "change",
+        event => {
 
+            const file =
+                event.target.files?.[0];
 
-        if (file) {
+            if (!file) {
+                return;
+            }
 
-            loadImage(
-                file
-            );
+            loadImage(file);
 
         }
+    );
 
-    }
-);
+}
 
 
 // ==========================================
@@ -113,22 +117,26 @@ document.addEventListener(
     "paste",
     event => {
 
-        const items =
-            event.clipboardData?.items;
+        const clipboardData =
+            event.clipboardData;
 
-
-        if (!items) {
-
+        if (!clipboardData) {
             return;
-
         }
 
+        const items =
+            clipboardData.items;
+
+        if (!items) {
+            return;
+        }
 
         for (
             const item of items
         ) {
 
             if (
+                item.type &&
                 item.type.startsWith(
                     "image/"
                 )
@@ -137,17 +145,13 @@ document.addEventListener(
                 const file =
                     item.getAsFile();
 
-
-                if (file) {
-
-                    loadImage(
-                        file
-                    );
-
-                    event.preventDefault();
-
+                if (!file) {
+                    return;
                 }
 
+                loadImage(file);
+
+                event.preventDefault();
 
                 return;
 
@@ -163,67 +167,74 @@ document.addEventListener(
 // DRAG OVER
 // ==========================================
 
-dropZone?.addEventListener(
-    "dragover",
-    event => {
+if (dropZone) {
 
-        event.preventDefault();
+    dropZone.addEventListener(
+        "dragover",
+        event => {
 
-        dropZone.classList.add(
-            "dragover"
-        );
+            event.preventDefault();
 
-    }
-);
+            dropZone.classList.add(
+                "dragover"
+            );
+
+        }
+    );
+
+}
 
 
 // ==========================================
 // DRAG LEAVE
 // ==========================================
 
-dropZone?.addEventListener(
-    "dragleave",
-    () => {
+if (dropZone) {
 
-        dropZone.classList.remove(
-            "dragover"
-        );
+    dropZone.addEventListener(
+        "dragleave",
+        () => {
 
-    }
-);
+            dropZone.classList.remove(
+                "dragover"
+            );
+
+        }
+    );
+
+}
 
 
 // ==========================================
 // DROP
 // ==========================================
 
-dropZone?.addEventListener(
-    "drop",
-    event => {
+if (dropZone) {
 
-        event.preventDefault();
+    dropZone.addEventListener(
+        "drop",
+        event => {
 
+            event.preventDefault();
 
-        dropZone.classList.remove(
-            "dragover"
-        );
-
-
-        const file =
-            event.dataTransfer
-                ?.files?.[0];
-
-
-        if (file) {
-
-            loadImage(
-                file
+            dropZone.classList.remove(
+                "dragover"
             );
 
-        }
+            const file =
+                event.dataTransfer
+                    ?.files?.[0];
 
-    }
-);
+            if (!file) {
+                return;
+            }
+
+            loadImage(file);
+
+        }
+    );
+
+}
 
 
 // ==========================================
@@ -249,6 +260,10 @@ function loadImage(
     }
 
 
+    selectedFile =
+        file;
+
+
     const reader =
         new FileReader();
 
@@ -260,6 +275,10 @@ function loadImage(
                 event.target.result;
 
 
+            // ==============================
+            // PREVIEW
+            // ==============================
+
             if (previewImage) {
 
                 previewImage.src =
@@ -268,19 +287,39 @@ function loadImage(
             }
 
 
-            previewSection?.classList.remove(
-                "hidden"
-            );
+            // ==============================
+            // SHOW SECTIONS
+            // ==============================
+
+            if (previewSection) {
+
+                previewSection.classList.remove(
+                    "hidden"
+                );
+
+            }
 
 
-            actionsSection?.classList.remove(
-                "hidden"
-            );
+            if (actionsSection) {
+
+                actionsSection.classList.remove(
+                    "hidden"
+                );
+
+            }
 
 
-            resultSection?.classList.add(
-                "hidden"
-            );
+            // ==============================
+            // RESET RESULT
+            // ==============================
+
+            if (resultSection) {
+
+                resultSection.classList.add(
+                    "hidden"
+                );
+
+            }
 
 
             if (resultText) {
@@ -289,6 +328,33 @@ function loadImage(
                     "";
 
             }
+
+
+            // ==============================
+            // SCROLL
+            // ==============================
+
+            if (previewSection) {
+
+                previewSection.scrollIntoView({
+                    behavior:
+                        "smooth",
+
+                    block:
+                        "center"
+                });
+
+            }
+
+        };
+
+
+    reader.onerror =
+        () => {
+
+            alert(
+                "ไม่สามารถอ่านรูปภาพได้"
+            );
 
         };
 
@@ -301,73 +367,113 @@ function loadImage(
 
 
 // ==========================================
-// REMOVE
+// REMOVE IMAGE
 // ==========================================
 
-removeImageBtn?.addEventListener(
-    "click",
-    () => {
+if (removeImageBtn) {
 
-        imageData =
-            null;
+    removeImageBtn.addEventListener(
+        "click",
+        () => {
+
+            selectedFile =
+                null;
 
 
-        if (imageInput) {
+            imageData =
+                null;
 
-            imageInput.value =
-                "";
+
+            if (imageInput) {
+
+                imageInput.value =
+                    "";
+
+            }
+
+
+            if (previewImage) {
+
+                previewImage.src =
+                    "";
+
+            }
+
+
+            if (previewSection) {
+
+                previewSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (actionsSection) {
+
+                actionsSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (resultSection) {
+
+                resultSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (resultText) {
+
+                resultText.value =
+                    "";
+
+            }
 
         }
+    );
 
-
-        if (previewImage) {
-
-            previewImage.src =
-                "";
-
-        }
-
-
-        previewSection?.classList.add(
-            "hidden"
-        );
-
-
-        actionsSection?.classList.add(
-            "hidden"
-        );
-
-
-        resultSection?.classList.add(
-            "hidden"
-        );
-
-
-        if (resultText) {
-
-            resultText.value =
-                "";
-
-        }
-
-    }
-);
+}
 
 
 // ==========================================
 // GENERATE BUTTONS
 // ==========================================
 
-reelsBtn?.addEventListener(
-    "click",
-    generate
-);
+// ทั้งสองปุ่มเรียก Generate เดียวกัน
+// เพื่อให้ Gemini สร้าง Reel + Facebook
+// พร้อมกันในครั้งเดียว
+
+if (reelsBtn) {
+
+    reelsBtn.addEventListener(
+        "click",
+        () => {
+
+            generate();
+
+        }
+    );
+
+}
 
 
-facebookBtn?.addEventListener(
-    "click",
-    generate
-);
+if (facebookBtn) {
+
+    facebookBtn.addEventListener(
+        "click",
+        () => {
+
+            generate();
+
+        }
+    );
+
+}
 
 
 // ==========================================
@@ -400,43 +506,57 @@ async function generate() {
             );
 
 
+        // ==============================
+        // SHOW RESULT
+        // ==============================
+
         if (resultText) {
 
             resultText.value =
-                `🎬 REELS CAPTION
-
-${result.reels}
-
-
-━━━━━━━━━━━━━━━━━━━━
-
-
-📘 FACEBOOK POST
-
-${result.facebook}`;
+                result;
 
         }
 
 
-        resultSection?.classList.remove(
-            "hidden"
-        );
+        if (resultSection) {
+
+            resultSection.classList.remove(
+                "hidden"
+            );
+
+        }
 
 
-        resultSection?.scrollIntoView({
-            behavior:
-                "smooth",
+        if (resultSection) {
 
-            block:
-                "start"
-        });
+            resultSection.scrollIntoView({
+                behavior:
+                    "smooth",
+
+                block:
+                    "center"
+            });
+
+        }
+
+
+        // ==============================
+        // CLEAN IMAGE DATA
+        // ==============================
+
+        // ไม่จำเป็นต้องเก็บรูปต่อหลังเจนเสร็จ
+        // แต่ยังคง preview ไว้ให้ผู้ใช้ดู
+
+        imageData =
+            imageData;
+
 
     }
 
     catch (error) {
 
         console.error(
-            "PostAI error:",
+            "Generate error:",
             error
         );
 
@@ -467,24 +587,56 @@ function setLoading(
     loading
 ) {
 
-    loadingSection?.classList.toggle(
-        "hidden",
-        !loading
-    );
-
-
-    if (reelsBtn) {
-
-        reelsBtn.disabled =
-            loading;
-
+    if (!loadingSection) {
+        return;
     }
 
 
-    if (facebookBtn) {
+    if (loading) {
 
-        facebookBtn.disabled =
-            loading;
+        loadingSection.classList.remove(
+            "hidden"
+        );
+
+
+        if (reelsBtn) {
+
+            reelsBtn.disabled =
+                true;
+
+        }
+
+
+        if (facebookBtn) {
+
+            facebookBtn.disabled =
+                true;
+
+        }
+
+    }
+
+    else {
+
+        loadingSection.classList.add(
+            "hidden"
+        );
+
+
+        if (reelsBtn) {
+
+            reelsBtn.disabled =
+                false;
+
+        }
+
+
+        if (facebookBtn) {
+
+            facebookBtn.disabled =
+                false;
+
+        }
 
     }
 
@@ -495,55 +647,62 @@ function setLoading(
 // COPY
 // ==========================================
 
-copyBtn?.addEventListener(
-    "click",
-    async () => {
+if (copyBtn) {
 
-        if (
-            !resultText?.value
-        ) {
+    copyBtn.addEventListener(
+        "click",
+        async () => {
 
-            return;
+            if (
+                !resultText ||
+                !resultText.value
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                await navigator
+                    .clipboard
+                    .writeText(
+                        resultText.value
+                    );
+
+
+                const oldText =
+                    copyBtn.textContent;
+
+
+                copyBtn.textContent =
+                    "✅ คัดลอกแล้ว";
+
+
+                setTimeout(
+                    () => {
+
+                        copyBtn.textContent =
+                            oldText;
+
+                    },
+                    1500
+                );
+
+            }
+
+            catch {
+
+                resultText.select();
+
+                document.execCommand(
+                    "copy"
+                );
+
+            }
 
         }
+    );
 
-
-        try {
-
-            await navigator.clipboard.writeText(
-                resultText.value
-            );
-
-
-            const oldText =
-                copyBtn.textContent;
-
-
-            copyBtn.textContent =
-                "✅ คัดลอกแล้ว";
-
-
-            setTimeout(
-                () => {
-
-                    copyBtn.textContent =
-                        oldText;
-
-                },
-                1500
-            );
-
-        }
-
-        catch {
-
-            resultText.select();
-
-            document.execCommand(
-                "copy"
-            );
-
-        }
-
-    }
-);
+}
