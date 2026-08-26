@@ -23,7 +23,7 @@ export async function generateCaption(
 
     const response =
         await fetch(
-            "/api/generate",
+            "https://post-ai-caption.vercel.app/api/generate",
             {
 
                 method:
