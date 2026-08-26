@@ -130,7 +130,8 @@ export default async function handler(req, res) {
 `;
 
         const endpoint =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+            const endpoint =
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent";
 
         const response =
             await fetch(
