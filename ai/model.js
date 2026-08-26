@@ -1,11 +1,10 @@
 // ==========================================
-// PostAI V2
-// Client-side Vision AI
+// PostAI
+// Client-side OCR
 // ==========================================
 
 import {
-    pipeline,
-    env
+    pipeline
 } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2";
 
 
@@ -14,36 +13,29 @@ import {
 // ==========================================
 
 const MODEL_NAME =
-    "Salesforce/blip-image-captioning-base";
-
-
-env.allowLocalModels = false;
-env.allowRemoteModels = true;
+    "Xenova/trocr-small-printed";
 
 
 // ==========================================
 // MODEL STATE
 // ==========================================
 
-let visionPipeline = null;
+let ocrPipeline = null;
 
 let loadingPromise = null;
 
 
 // ==========================================
-// LOAD MODEL
+// LOAD OCR MODEL
 // ==========================================
 
-export async function loadVisionModel(
-    onProgress = null
-) {
+export async function loadVisionModel() {
 
-    if (visionPipeline) {
+    if (ocrPipeline) {
 
-        return visionPipeline;
+        return ocrPipeline;
 
     }
-
 
     if (loadingPromise) {
 
@@ -51,80 +43,36 @@ export async function loadVisionModel(
 
     }
 
-
     loadingPromise =
-        createPipeline("webgpu");
-
+        pipeline(
+            "image-to-text",
+            MODEL_NAME,
+            {
+                device: "wasm"
+            }
+        );
 
     try {
 
-        visionPipeline =
+        ocrPipeline =
             await loadingPromise;
 
+        return ocrPipeline;
 
-        if (onProgress) {
+    } catch (error) {
 
-            onProgress(100);
-
-        }
-
-
-        return visionPipeline;
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "WebGPU ใช้งานไม่ได้ กำลังเปลี่ยนเป็น WASM",
+        console.error(
+            "OCR model loading error:",
             error
         );
 
+        throw error;
 
-        loadingPromise =
-            createPipeline("wasm");
+    } finally {
 
-
-        visionPipeline =
-            await loadingPromise;
-
-
-        return visionPipeline;
+        loadingPromise = null;
 
     }
-
-    finally {
-
-        loadingPromise =
-            null;
-
-    }
-
-}
-
-
-// ==========================================
-// CREATE PIPELINE
-// ==========================================
-
-async function createPipeline(
-    device
-) {
-
-    return await pipeline(
-        "image-to-text",
-        MODEL_NAME,
-        {
-
-            device,
-
-            dtype:
-                device === "webgpu"
-                    ? "q4"
-                    : "q8"
-
-        }
-    );
 
 }
 
@@ -140,21 +88,13 @@ export async function analyzeImage(
     const model =
         await loadVisionModel();
 
-
     const result =
         await model(
             imageSource,
             {
-
-                max_new_tokens:
-                    150,
-
-                do_sample:
-                    false
-
+                max_new_tokens: 256
             }
         );
-
 
     return normalizeResult(
         result
@@ -177,7 +117,6 @@ function normalizeResult(
 
     }
 
-
     if (
         Array.isArray(result)
     ) {
@@ -194,10 +133,8 @@ function normalizeResult(
 
     }
 
-
     if (
-        typeof result ===
-        "object"
+        typeof result === "object"
     ) {
 
         return (
@@ -208,10 +145,7 @@ function normalizeResult(
 
     }
 
-
-    return String(
-        result
-    );
+    return String(result);
 
 }
 
@@ -223,7 +157,7 @@ function normalizeResult(
 export function isModelLoaded() {
 
     return Boolean(
-        visionPipeline
+        ocrPipeline
     );
 
 }
