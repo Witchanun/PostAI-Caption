@@ -1,7 +1,6 @@
 /* ==========================================
    PostAI
-   Modern AI SaaS UI
-   Mobile First
+   Premium AI SaaS UI
    ========================================== */
 
 * {
@@ -10,6 +9,18 @@
 
 html {
     scroll-behavior: smooth;
+}
+
+:root {
+    --bg: #f6f7fb;
+    --text: #15161d;
+    --muted: #777b89;
+    --purple: #6366f1;
+    --purple-light: #8b5cf6;
+    --card: rgba(255, 255, 255, 0.72);
+    --border: rgba(255, 255, 255, 0.75);
+    --shadow:
+        0 20px 60px rgba(34, 38, 70, 0.10);
 }
 
 body {
@@ -24,15 +35,46 @@ body {
         Arial,
         sans-serif;
 
-    background:
-        radial-gradient(circle at 50% -10%,
-            rgba(99, 102, 241, 0.12),
-            transparent 38%),
-        linear-gradient(180deg,
-            #f8f9fd 0%,
-            #eef1f7 100%);
+    color: var(--text);
 
-    color: #171923;
+    background:
+        radial-gradient(circle at 15% 5%,
+            rgba(99, 102, 241, 0.14),
+            transparent 28%),
+        radial-gradient(circle at 90% 18%,
+            rgba(139, 92, 246, 0.12),
+            transparent 25%),
+        linear-gradient(180deg,
+            #fafbff 0%,
+            #f0f2f8 100%);
+
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+
+    position: fixed;
+
+    width: 420px;
+    height: 420px;
+
+    top: -180px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background:
+        radial-gradient(circle,
+            rgba(99, 102, 241, 0.12),
+            transparent 70%);
+
+    filter: blur(20px);
+
+    pointer-events: none;
+
+    animation:
+        ambientMove 8s ease-in-out infinite alternate;
 }
 
 button,
@@ -43,6 +85,7 @@ input {
 
 button {
     cursor: pointer;
+
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -52,11 +95,16 @@ button {
    ========================================== */
 
 .app {
-    width: min(calc(100% - 32px), 760px);
+    position: relative;
+
+    width: min(calc(100% - 32px),
+            760px);
 
     margin: 0 auto;
 
-    padding: 24px 0 42px;
+    padding: 28px 0 50px;
+
+    z-index: 1;
 }
 
 
@@ -70,13 +118,25 @@ button {
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 42px;
+    margin-bottom: 48px;
 }
 
 .logo {
     font-size: 22px;
+
     font-weight: 850;
-    letter-spacing: -0.8px;
+
+    letter-spacing: -0.9px;
+
+    background:
+        linear-gradient(135deg,
+            #15161d,
+            #6366f1);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
 }
 
 .subtitle {
@@ -93,37 +153,82 @@ button {
    ========================================== */
 
 .hero {
-    margin-bottom: 30px;
+    margin-bottom: 34px;
+
+    animation:
+        fadeUp 0.7s ease both;
 }
 
 .badge {
+    position: relative;
+
     display: inline-flex;
 
     align-items: center;
     justify-content: center;
 
-    padding: 7px 12px;
+    overflow: hidden;
 
-    border: 1px solid rgba(99, 102, 241, 0.12);
+    padding: 8px 13px;
+
+    border:
+        1px solid rgba(99, 102, 241, 0.14);
 
     border-radius: 999px;
 
-    background: rgba(99, 102, 241, 0.08);
+    background:
+        rgba(255, 255, 255, 0.65);
+
+    backdrop-filter: blur(14px);
+
+    -webkit-backdrop-filter: blur(14px);
 
     color: #5b5fe8;
 
     font-size: 12px;
+
     font-weight: 750;
+
+    box-shadow:
+        0 8px 25px rgba(70, 74, 150, 0.08);
+}
+
+.badge::after {
+    content: "";
+
+    position: absolute;
+
+    width: 70px;
+    height: 100%;
+
+    top: 0;
+    left: -100px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.8),
+            transparent);
+
+    transform: skewX(-20deg);
+
+    animation:
+        badgeShine 4s ease-in-out infinite;
 }
 
 .hero h1 {
-    margin: 17px 0 13px;
+    margin: 18px 0 14px;
 
-    font-size: clamp(32px, 8.5vw, 50px);
+    max-width: 680px;
 
-    line-height: 1.08;
+    font-size:
+        clamp(34px,
+            8.5vw,
+            52px);
 
-    letter-spacing: -1.9px;
+    line-height: 1.06;
+
+    letter-spacing: -2px;
 
     font-weight: 850;
 }
@@ -131,9 +236,9 @@ button {
 .hero p {
     margin: 0;
 
-    max-width: 560px;
+    max-width: 570px;
 
-    color: #737887;
+    color: var(--muted);
 
     font-size: 15px;
 
@@ -148,43 +253,109 @@ button {
 .upload-card {
     position: relative;
 
-    padding: 38px 22px;
+    overflow: hidden;
+
+    padding: 42px 24px;
 
     text-align: center;
 
-    background: rgba(255, 255, 255, 0.88);
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.86),
+            rgba(255, 255, 255, 0.62));
 
-    border: 1px solid rgba(30, 35, 60, 0.07);
+    border:
+        1px solid var(--border);
 
-    border-radius: 26px;
+    border-radius: 28px;
+
+    backdrop-filter: blur(20px);
+
+    -webkit-backdrop-filter: blur(20px);
 
     box-shadow:
-        0 18px 55px rgba(35, 40, 70, 0.08);
+        0 25px 70px rgba(35, 40, 75, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
     transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+
+    animation:
+        fadeUp 0.8s 0.08s ease both;
+}
+
+.upload-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    top: -130px;
+    right: -80px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            rgba(99, 102, 241, 0.13),
+            transparent 70%);
+
+    filter: blur(5px);
+
+    pointer-events: none;
+
+    animation:
+        floatGlow 6s ease-in-out infinite alternate;
+}
+
+.upload-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 1px;
+
+    top: 0;
+    left: -150px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.9),
+            transparent);
+
+    transform: rotate(20deg);
+
+    animation:
+        cardShine 5s ease-in-out infinite;
 }
 
 .upload-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-5px);
 
-    border-color: rgba(99, 102, 241, 0.2);
+    border-color:
+        rgba(99, 102, 241, 0.20);
 
     box-shadow:
-        0 22px 65px rgba(35, 40, 70, 0.11);
+        0 32px 85px rgba(35, 40, 75, 0.14),
+        0 0 0 1px rgba(99, 102, 241, 0.03);
 }
 
 .upload-card.dragover {
-    transform: scale(1.01);
+    transform: scale(1.015);
 
     border-color: #6366f1;
 
-    background: #f5f5ff;
+    background:
+        rgba(245, 245, 255, 0.9);
 
     box-shadow:
-        0 20px 60px rgba(99, 102, 241, 0.12);
+        0 25px 80px rgba(99, 102, 241, 0.18);
 }
 
 
@@ -193,29 +364,50 @@ button {
    ========================================== */
 
 .upload-icon {
+    position: relative;
+
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    width: 72px;
-    height: 72px;
+    width: 76px;
+    height: 76px;
 
-    margin: 0 auto 18px;
+    margin: 0 auto 20px;
 
-    border-radius: 21px;
+    border-radius: 23px;
 
     background:
         linear-gradient(145deg,
-            #f0f1ff,
-            #e8eaff);
+            #f2f3ff,
+            #e7e9ff);
 
-    border: 1px solid rgba(99, 102, 241, 0.08);
+    border:
+        1px solid rgba(99, 102, 241, 0.10);
 
-    font-size: 31px;
+    font-size: 32px;
 
     box-shadow:
-        0 8px 20px rgba(70, 75, 150, 0.07);
+        0 14px 30px rgba(74, 78, 160, 0.12);
+
+    animation:
+        iconFloat 4s ease-in-out infinite;
+}
+
+.upload-icon::after {
+    content: "";
+
+    position: absolute;
+
+    inset: -6px;
+
+    border-radius: 28px;
+
+    border:
+        1px solid rgba(99, 102, 241, 0.08);
+
+    opacity: 0.7;
 }
 
 .upload-card h2 {
@@ -227,9 +419,9 @@ button {
 }
 
 .upload-card p {
-    margin: 0 auto 22px;
+    margin: 0 auto 23px;
 
-    max-width: 370px;
+    max-width: 380px;
 
     color: #7b7f8d;
 
@@ -239,7 +431,7 @@ button {
 }
 
 .upload-hint {
-    margin-top: 15px;
+    margin-top: 16px;
 
     color: #a0a4b0;
 
@@ -260,10 +452,10 @@ button {
     border: 0;
 
     transition:
-        transform 0.18s ease,
-        opacity 0.18s ease,
-        box-shadow 0.18s ease,
-        background 0.18s ease;
+        transform 0.2s ease,
+        opacity 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
 
@@ -272,11 +464,18 @@ button {
    ========================================== */
 
 .secondary-btn {
-    padding: 12px 19px;
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 12px 20px;
 
     border-radius: 13px;
 
-    background: #171923;
+    background:
+        linear-gradient(135deg,
+            #171923,
+            #303342);
 
     color: #ffffff;
 
@@ -285,18 +484,41 @@ button {
     font-weight: 750;
 
     box-shadow:
-        0 7px 18px rgba(23, 25, 35, 0.13);
+        0 9px 22px rgba(23, 25, 35, 0.18);
+}
+
+.secondary-btn::after {
+    content: "";
+
+    position: absolute;
+
+    width: 80px;
+    height: 140%;
+
+    top: -20%;
+    left: -120px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.22),
+            transparent);
+
+    transform: skewX(-20deg);
+
+    animation:
+        buttonShine 4s ease-in-out infinite;
 }
 
 .secondary-btn:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 
     box-shadow:
-        0 10px 23px rgba(23, 25, 35, 0.18);
+        0 13px 28px rgba(23, 25, 35, 0.24);
 }
 
 .secondary-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
 }
 
 
@@ -306,10 +528,13 @@ button {
 
 .section {
     margin-top: 30px;
+
+    animation:
+        fadeUp 0.55s ease both;
 }
 
 .action-section {
-    margin-top: 20px;
+    margin-top: 22px;
 }
 
 .action-hint {
@@ -357,7 +582,8 @@ button {
 
     border-radius: 10px;
 
-    background: rgba(30, 35, 50, 0.06);
+    background:
+        rgba(30, 35, 50, 0.06);
 
     color: #737783;
 
@@ -367,9 +593,12 @@ button {
 }
 
 .remove-btn:hover {
-    background: rgba(220, 70, 70, 0.08);
+    background:
+        rgba(220, 70, 70, 0.08);
 
     color: #c44b4b;
+
+    transform: translateY(-1px);
 }
 
 
@@ -384,10 +613,22 @@ button {
 
     background: #ffffff;
 
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border:
+        1px solid rgba(255, 255, 255, 0.9);
 
     box-shadow:
-        0 12px 35px rgba(30, 35, 60, 0.07);
+        0 20px 55px rgba(30, 35, 60, 0.10);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.preview-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 27px 65px rgba(30, 35, 60, 0.14);
 }
 
 .preview-card img {
@@ -399,7 +640,10 @@ button {
 
     object-fit: contain;
 
-    background: #f5f5f7;
+    background:
+        linear-gradient(135deg,
+            #f7f8fb,
+            #eef0f6);
 }
 
 
@@ -408,16 +652,23 @@ button {
    ========================================== */
 
 .generate-btn {
+    position: relative;
+
+    overflow: hidden;
+
     width: 100%;
 
-    padding: 17px 20px;
+    padding: 18px 20px;
 
     border-radius: 17px;
 
     background:
         linear-gradient(135deg,
-            #171923,
-            #292c3a);
+            #171923 0%,
+            #343746 50%,
+            #171923 100%);
+
+    background-size: 200% 100%;
 
     color: #ffffff;
 
@@ -428,18 +679,46 @@ button {
     letter-spacing: -0.2px;
 
     box-shadow:
-        0 13px 30px rgba(23, 25, 35, 0.2);
+        0 15px 35px rgba(23, 25, 35, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.04);
+
+    animation:
+        buttonGradient 5s ease infinite;
+}
+
+.generate-btn::before {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 200%;
+
+    top: -50%;
+    left: -180px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.20),
+            transparent);
+
+    transform: rotate(20deg);
+
+    animation:
+        generateShine 3.8s ease-in-out infinite;
 }
 
 .generate-btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 
     box-shadow:
-        0 17px 36px rgba(23, 25, 35, 0.25);
+        0 21px 45px rgba(23, 25, 35, 0.28),
+        0 0 30px rgba(99, 102, 241, 0.10);
 }
 
 .generate-btn:active {
-    transform: translateY(0);
+    transform: translateY(-1px) scale(0.99);
 }
 
 .generate-btn:disabled {
@@ -450,6 +729,8 @@ button {
     transform: none;
 
     box-shadow: none;
+
+    animation: none;
 }
 
 
@@ -466,16 +747,25 @@ button {
 
     margin-top: 22px;
 
-    padding: 17px 18px;
+    padding: 18px;
 
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    border:
+        1px solid rgba(99, 102, 241, 0.12);
 
-    border-radius: 18px;
+    border-radius: 19px;
 
-    background: rgba(255, 255, 255, 0.82);
+    background:
+        rgba(255, 255, 255, 0.72);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
 
     box-shadow:
-        0 10px 30px rgba(30, 35, 60, 0.05);
+        0 15px 40px rgba(30, 35, 60, 0.07);
+
+    animation:
+        fadeUp 0.35s ease both;
 }
 
 .loading-card strong {
@@ -499,22 +789,20 @@ button {
 .spinner {
     flex: 0 0 auto;
 
-    width: 27px;
-    height: 27px;
+    width: 28px;
+    height: 28px;
 
-    border: 3px solid #e5e6ef;
+    border:
+        3px solid #e5e6ef;
 
     border-top-color: #6366f1;
 
+    border-right-color: #8b5cf6;
+
     border-radius: 50%;
 
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    animation:
+        spin 0.75s linear infinite;
 }
 
 
@@ -523,7 +811,10 @@ button {
    ========================================== */
 
 .results {
-    margin-top: 38px;
+    margin-top: 40px;
+
+    animation:
+        fadeUp 0.5s ease both;
 }
 
 .result-heading {
@@ -533,9 +824,9 @@ button {
 .result-heading h2 {
     margin: 14px 0 7px;
 
-    font-size: 25px;
+    font-size: 26px;
 
-    letter-spacing: -0.7px;
+    letter-spacing: -0.8px;
 }
 
 .result-heading p {
@@ -552,24 +843,65 @@ button {
    ========================================== */
 
 .result-card {
-    margin-bottom: 16px;
+    position: relative;
 
     overflow: hidden;
 
-    border: 1px solid rgba(30, 35, 60, 0.07);
+    margin-bottom: 17px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.85);
 
     border-radius: 22px;
 
-    background: rgba(255, 255, 255, 0.9);
+    background:
+        rgba(255, 255, 255, 0.76);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
 
     box-shadow:
-        0 13px 38px rgba(30, 35, 60, 0.06);
+        0 16px 45px rgba(30, 35, 60, 0.07);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.result-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 160px;
+    height: 160px;
+
+    top: -110px;
+    right: -70px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            rgba(99, 102, 241, 0.09),
+            transparent 70%);
+
+    pointer-events: none;
+}
+
+.result-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 23px 58px rgba(30, 35, 60, 0.11);
 }
 
 .result-header {
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     gap: 12px;
@@ -591,14 +923,20 @@ button {
     align-items: center;
     justify-content: center;
 
-    width: 39px;
-    height: 39px;
+    width: 40px;
+    height: 40px;
 
     flex: 0 0 auto;
 
     border-radius: 12px;
 
-    background: #f1f2f8;
+    background:
+        linear-gradient(145deg,
+            #f1f2ff,
+            #e9eaff);
+
+    box-shadow:
+        0 7px 18px rgba(80, 84, 160, 0.08);
 
     font-size: 18px;
 }
@@ -639,13 +977,18 @@ button {
 }
 
 .copy-btn:hover {
-    background: #e7e8f0;
+    background: #e5e6ef;
 
     color: #171923;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 14px rgba(30, 35, 60, 0.08);
 }
 
 .copy-btn:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
 }
 
 
@@ -666,28 +1009,37 @@ button {
 
     resize: vertical;
 
-    border: 1px solid rgba(30, 35, 60, 0.07);
+    border:
+        1px solid rgba(30, 35, 60, 0.07);
 
     border-radius: 15px;
 
     outline: none;
 
-    background: #f8f9fc;
+    background:
+        rgba(248, 249, 252, 0.9);
 
     color: #292c36;
 
     font-size: 13px;
 
     line-height: 1.7;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
 }
 
 .result-text:focus {
-    border-color: rgba(99, 102, 241, 0.35);
+    border-color:
+        rgba(99, 102, 241, 0.35);
 
     background: #ffffff;
 
     box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.07);
+        0 0 0 4px rgba(99, 102, 241, 0.07),
+        0 10px 30px rgba(40, 45, 90, 0.06);
 }
 
 
@@ -703,7 +1055,7 @@ button {
 
     gap: 8px;
 
-    margin-top: 45px;
+    margin-top: 48px;
 
     color: #9a9daa;
 
@@ -723,29 +1075,150 @@ button {
 
 
 /* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ambientMove {
+    from {
+        transform:
+            translateX(-50%) translateY(0) scale(1);
+    }
+
+    to {
+        transform:
+            translateX(-50%) translateY(35px) scale(1.12);
+    }
+}
+
+@keyframes floatGlow {
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(-25px, 30px);
+    }
+}
+
+@keyframes iconFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes badgeShine {
+
+    0%,
+    55% {
+        left: -100px;
+    }
+
+    75%,
+    100% {
+        left: 130%;
+    }
+}
+
+@keyframes cardShine {
+
+    0%,
+    60% {
+        left: -150px;
+    }
+
+    80%,
+    100% {
+        left: 120%;
+    }
+}
+
+@keyframes buttonShine {
+
+    0%,
+    55% {
+        left: -120px;
+    }
+
+    75%,
+    100% {
+        left: 130%;
+    }
+}
+
+@keyframes generateShine {
+
+    0%,
+    45% {
+        left: -180px;
+    }
+
+    70%,
+    100% {
+        left: 130%;
+    }
+}
+
+@keyframes buttonGradient {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+
+/* ==========================================
    DESKTOP
    ========================================== */
 
 @media (min-width: 640px) {
 
     .app {
-        padding-top: 34px;
+        padding-top: 38px;
     }
 
     .header {
-        margin-bottom: 55px;
+        margin-bottom: 58px;
     }
 
     .hero {
-        margin-bottom: 36px;
+        margin-bottom: 40px;
     }
 
     .upload-card {
-        padding: 48px 30px;
+        padding: 52px 30px;
     }
 
     .action-section {
-        margin-top: 24px;
+        margin-top: 25px;
     }
 
     .result-text {
@@ -762,13 +1235,15 @@ button {
 @media (max-width: 520px) {
 
     .app {
-        width: min(calc(100% - 22px), 760px);
+        width:
+            min(calc(100% - 22px),
+                760px);
 
         padding-top: 18px;
     }
 
     .header {
-        margin-bottom: 28px;
+        margin-bottom: 32px;
     }
 
     .logo {
@@ -782,7 +1257,7 @@ button {
     .hero h1 {
         font-size: 32px;
 
-        letter-spacing: -1px;
+        letter-spacing: -1.2px;
     }
 
     .hero p {
@@ -790,29 +1265,36 @@ button {
     }
 
     .upload-card {
-        padding: 30px 16px;
+        padding: 32px 16px;
 
-        border-radius: 20px;
+        border-radius: 22px;
+    }
+
+    .upload-icon {
+        width: 70px;
+        height: 70px;
+
+        border-radius: 21px;
     }
 
     .preview-card {
-        border-radius: 16px;
-    }
-
-    .result-card {
         border-radius: 17px;
     }
 
+    .result-card {
+        border-radius: 18px;
+    }
+
     .result-header {
-        padding: 13px;
+        padding: 14px;
     }
 
     .result-text {
-        width: calc(100% - 26px);
+        width: calc(100% - 28px);
 
         min-height: 320px;
 
-        margin: 0 13px 13px;
+        margin: 0 14px 14px;
 
         padding: 14px;
 
@@ -852,6 +1334,24 @@ button {
         padding: 7px 8px;
 
         font-size: 10px;
+    }
+
+}
+
+
+/* ==========================================
+   REDUCE MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 
 }
