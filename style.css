@@ -1,7 +1,13 @@
 /* =========================================================
-   PostAI
-   Clean Premium AI SaaS UI
-   Single Column / Responsive
+   PostAI — Premium AI SaaS UI
+   Clean / Minimal / Mobile First
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap');
+
+
+/* =========================================================
+   RESET
    ========================================================= */
 
 * {
@@ -17,22 +23,19 @@ body {
     min-height: 100vh;
 
     font-family:
+        "Inter",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
-        Roboto,
-        Arial,
         sans-serif;
-
-    background:
-        linear-gradient(180deg,
-            #fafbfe 0%,
-            #f3f5f9 100%);
 
     color: #171923;
 
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    background:
+        radial-gradient(circle at 50% -15%,
+            rgba(99, 102, 241, 0.07),
+            transparent 34%),
+        #f7f8fb;
 }
 
 button,
@@ -53,12 +56,12 @@ button {
 
 .app {
     width: min(calc(100% - 32px),
-            720px);
+            760px);
 
     margin: 0 auto;
 
     padding:
-        28px 0 48px;
+        24px 0 44px;
 }
 
 
@@ -68,28 +71,33 @@ button {
 
 .header {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 64px;
+    margin-bottom: 46px;
 }
 
 .logo {
+    font-family:
+        "Manrope",
+        sans-serif;
+
     font-size: 21px;
-    font-weight: 800;
+
+    font-weight: 700;
 
     letter-spacing: -0.7px;
-
-    color: #151722;
 }
 
 .subtitle {
-    font-size: 12px;
-    font-weight: 600;
+    color: #8b8e99;
+
+    font-size: 11px;
+
+    font-weight: 500;
 
     letter-spacing: 0.1px;
-
-    color: #8b8f9c;
 }
 
 
@@ -98,7 +106,7 @@ button {
    ========================================================= */
 
 .hero {
-    margin-bottom: 38px;
+    margin-bottom: 30px;
 }
 
 .badge {
@@ -107,65 +115,58 @@ button {
     align-items: center;
     justify-content: center;
 
-    min-height: 30px;
-
     padding:
-        6px 11px;
+        7px 11px;
 
     border:
-        1px solid rgba(99, 102, 241, 0.14);
+        1px solid rgba(99, 102, 241, 0.12);
 
     border-radius: 999px;
 
     background:
-        rgba(99, 102, 241, 0.07);
+        rgba(99, 102, 241, 0.055);
 
-    color: #595ddf;
+    color: #595bd8;
 
     font-size: 11px;
-    font-weight: 750;
 
-    letter-spacing: 0.3px;
+    font-weight: 600;
+
+    letter-spacing: 0.1px;
 }
 
 .hero h1 {
+    margin:
+        15px 0 13px;
+
     max-width: 650px;
 
-    margin:
-        19px 0 15px;
+    font-family:
+        "Manrope",
+        sans-serif;
 
     font-size:
-        clamp(36px, 8vw, 54px);
+        clamp(32px, 7vw, 42px);
 
-    line-height:
-        1.04;
+    line-height: 1.12;
 
-    letter-spacing:
-        -2.5px;
+    letter-spacing: -1.6px;
 
-    font-weight:
-        800;
-
-    color:
-        #151722;
+    font-weight: 700;
 }
 
 .hero p {
-    max-width: 500px;
+    max-width: 520px;
 
     margin: 0;
 
-    color:
-        #747987;
+    color: #777b88;
 
-    font-size:
-        15px;
+    font-size: 14px;
 
-    line-height:
-        1.7;
+    line-height: 1.7;
 
-    font-weight:
-        450;
+    font-weight: 400;
 }
 
 
@@ -177,51 +178,50 @@ button {
     position: relative;
 
     padding:
-        46px 26px;
+        42px 24px;
 
     text-align: center;
 
     background:
-        rgba(255, 255, 255, 0.94);
+        rgba(255, 255, 255, 0.92);
 
     border:
-        1px solid rgba(24, 28, 45, 0.07);
+        1px solid rgba(24, 27, 40, 0.07);
 
-    border-radius:
-        24px;
+    border-radius: 22px;
 
     box-shadow:
-        0 12px 35px rgba(30, 35, 60, 0.055);
+        0 10px 30px rgba(24, 28, 50, 0.045),
+        0 2px 8px rgba(24, 28, 50, 0.025);
 
     transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
 }
 
 .upload-card:hover {
-    transform:
-        translateY(-2px);
+    transform: translateY(-2px);
 
     border-color:
-        rgba(99, 102, 241, 0.18);
+        rgba(99, 102, 241, 0.16);
 
     box-shadow:
-        0 18px 42px rgba(30, 35, 60, 0.08);
+        0 16px 38px rgba(24, 28, 50, 0.07),
+        0 3px 10px rgba(24, 28, 50, 0.035);
 }
 
 .upload-card.dragover {
-    transform:
-        translateY(-2px);
+    transform: translateY(-2px);
 
     border-color:
-        #6366f1;
+        rgba(99, 102, 241, 0.42);
 
     background:
-        #f8f8ff;
+        #fafaff;
 
     box-shadow:
-        0 18px 45px rgba(99, 102, 241, 0.12);
+        0 18px 42px rgba(99, 102, 241, 0.1);
 }
 
 
@@ -235,14 +235,13 @@ button {
     align-items: center;
     justify-content: center;
 
-    width: 68px;
-    height: 68px;
+    width: 62px;
+    height: 62px;
 
     margin:
-        0 auto 19px;
+        0 auto 17px;
 
-    border-radius:
-        18px;
+    border-radius: 18px;
 
     background:
         #f1f2ff;
@@ -250,59 +249,50 @@ button {
     border:
         1px solid rgba(99, 102, 241, 0.08);
 
-    font-size:
-        29px;
+    font-size: 27px;
+
+    box-shadow:
+        0 5px 15px rgba(70, 75, 150, 0.05);
 }
 
 .upload-card h2 {
     margin:
         0 0 8px;
 
-    font-size:
-        20px;
+    font-family:
+        "Manrope",
+        sans-serif;
 
-    line-height:
-        1.3;
+    font-size: 19px;
 
-    letter-spacing:
-        -0.45px;
+    font-weight: 700;
 
-    font-weight:
-        750;
+    letter-spacing: -0.4px;
 }
 
 .upload-card p {
-    max-width:
-        360px;
-
     margin:
-        0 auto 24px;
+        0 auto 21px;
 
-    color:
-        #7b7f8d;
+    max-width: 350px;
 
-    font-size:
-        14px;
+    color: #7d818d;
 
-    line-height:
-        1.65;
+    font-size: 13px;
+
+    line-height: 1.65;
 }
 
 .upload-hint {
-    margin-top:
-        14px;
+    margin-top: 14px;
 
-    color:
-        #a1a5b0;
+    color: #a1a4ae;
 
-    font-size:
-        11px;
+    font-size: 10px;
 
-    font-weight:
-        600;
+    font-weight: 500;
 
-    letter-spacing:
-        0.1px;
+    letter-spacing: 0.1px;
 }
 
 
@@ -317,61 +307,55 @@ button {
     border: 0;
 
     transition:
-        transform 0.16s ease,
-        background 0.16s ease,
-        color 0.16s ease,
-        box-shadow 0.16s ease,
-        opacity 0.16s ease;
+        transform 150ms ease,
+        background 150ms ease,
+        box-shadow 150ms ease,
+        color 150ms ease;
 }
 
 
 /* =========================================================
-   CHOOSE IMAGE BUTTON
+   SECONDARY BUTTON
    ========================================================= */
 
 .secondary-btn {
     padding:
-        12px 19px;
+        11px 17px;
 
-    border-radius:
-        12px;
+    border-radius: 11px;
 
     background:
-        #5f63e8;
+        #6366f1;
 
-    color:
-        #ffffff;
+    color: #ffffff;
 
-    font-size:
-        13px;
+    font-size: 12px;
 
-    font-weight:
-        750;
+    font-weight: 600;
 
     box-shadow:
-        0 7px 18px rgba(95, 99, 232, 0.22);
+        0 6px 15px rgba(99, 102, 241, 0.18);
 }
 
 .secondary-btn:hover {
-    transform:
-        translateY(-2px);
+    transform: translateY(-1px);
 
     background:
-        #5559dc;
+        #5658dc;
 
     box-shadow:
-        0 11px 24px rgba(95, 99, 232, 0.28);
+        0 9px 20px rgba(99, 102, 241, 0.23);
 }
 
 .secondary-btn:active {
     transform:
-        translateY(1px);
+        translateY(1px) scale(0.98);
 
     background:
-        #4d51cf;
+        #4d4fc9;
 
     box-shadow:
-        0 3px 8px rgba(95, 99, 232, 0.18);
+        0 3px 8px rgba(99, 102, 241, 0.15);
 }
 
 
@@ -380,30 +364,22 @@ button {
    ========================================================= */
 
 .section {
-    margin-top:
-        34px;
+    margin-top: 28px;
 }
 
 .action-section {
-    margin-top:
-        22px;
+    margin-top: 20px;
 }
 
 .action-hint {
     margin:
-        11px 0 0;
+        10px 0 0;
 
-    text-align:
-        center;
+    text-align: center;
 
-    color:
-        #8c909c;
+    color: #90939d;
 
-    font-size:
-        12px;
-
-    line-height:
-        1.5;
+    font-size: 11px;
 }
 
 
@@ -417,8 +393,7 @@ button {
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom:
-        13px;
+    margin-bottom: 11px;
 }
 
 .section-title>div {
@@ -426,60 +401,37 @@ button {
 
     align-items: center;
 
-    gap:
-        9px;
-}
-
-.section-title>div>span {
-    font-size:
-        15px;
+    gap: 8px;
 }
 
 .section-title h2 {
     margin: 0;
 
-    font-size:
-        11px;
+    font-family:
+        "Manrope",
+        sans-serif;
 
-    line-height:
-        1;
+    font-size: 16px;
 
-    font-weight:
-        800;
+    font-weight: 700;
 
-    letter-spacing:
-        0.8px;
-
-    text-transform:
-        uppercase;
-
-    color:
-        #777b89;
+    letter-spacing: -0.3px;
 }
-
-
-/* =========================================================
-   REMOVE BUTTON
-   ========================================================= */
 
 .remove-btn {
     padding:
-        7px 11px;
+        7px 10px;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
     background:
         #f0f1f4;
 
-    color:
-        #777b86;
+    color: #747783;
 
-    font-size:
-        11px;
+    font-size: 11px;
 
-    font-weight:
-        650;
+    font-weight: 600;
 }
 
 .remove-btn:hover {
@@ -487,7 +439,7 @@ button {
         #fbeeee;
 
     color:
-        #c04d4d;
+        #bd4d4d;
 }
 
 .remove-btn:active {
@@ -501,34 +453,27 @@ button {
    ========================================================= */
 
 .preview-card {
-    overflow:
-        hidden;
-
-    background:
-        #ffffff;
+    overflow: hidden;
 
     border:
-        1px solid rgba(24, 28, 45, 0.07);
+        1px solid rgba(24, 27, 40, 0.07);
 
-    border-radius:
-        20px;
+    border-radius: 18px;
+
+    background: #ffffff;
 
     box-shadow:
-        0 10px 30px rgba(30, 35, 60, 0.055);
+        0 10px 28px rgba(24, 28, 50, 0.05);
 }
 
 .preview-card img {
-    display:
-        block;
+    display: block;
 
-    width:
-        100%;
+    width: 100%;
 
-    max-height:
-        520px;
+    max-height: 520px;
 
-    object-fit:
-        contain;
+    object-fit: contain;
 
     background:
         #f5f6f8;
@@ -540,35 +485,28 @@ button {
    ========================================================= */
 
 .generate-btn {
-    width:
-        100%;
-
-    min-height:
-        52px;
+    width: 100%;
 
     padding:
-        14px 20px;
+        16px 20px;
 
-    border-radius:
-        14px;
+    border-radius: 14px;
 
     background:
-        #5f63e8;
+        linear-gradient(135deg,
+            #6366f1,
+            #5558dc);
 
-    color:
-        #ffffff;
+    color: #ffffff;
 
-    font-size:
-        15px;
+    font-size: 14px;
 
-    font-weight:
-        800;
+    font-weight: 700;
 
-    letter-spacing:
-        -0.15px;
+    letter-spacing: -0.1px;
 
     box-shadow:
-        0 9px 24px rgba(95, 99, 232, 0.22);
+        0 10px 24px rgba(99, 102, 241, 0.2);
 }
 
 .generate-btn:hover {
@@ -576,35 +514,35 @@ button {
         translateY(-2px);
 
     background:
-        #5559dc;
+        linear-gradient(135deg,
+            #5b5ee8,
+            #4e51d2);
 
     box-shadow:
-        0 14px 30px rgba(95, 99, 232, 0.29);
+        0 14px 30px rgba(99, 102, 241, 0.26);
 }
 
 .generate-btn:active {
     transform:
-        translateY(2px);
+        translateY(1px) scale(0.99);
 
     background:
-        #4d51cf;
+        linear-gradient(135deg,
+            #4f52ce,
+            #4548bd);
 
     box-shadow:
-        0 4px 10px rgba(95, 99, 232, 0.18);
+        0 5px 13px rgba(99, 102, 241, 0.18);
 }
 
 .generate-btn:disabled {
-    opacity:
-        0.55;
+    opacity: 0.5;
 
-    cursor:
-        not-allowed;
+    cursor: not-allowed;
 
-    transform:
-        none;
+    transform: none;
 
-    box-shadow:
-        none;
+    box-shadow: none;
 }
 
 
@@ -617,74 +555,58 @@ button {
 
     align-items: center;
 
-    gap:
-        14px;
+    gap: 14px;
 
-    margin-top:
-        22px;
+    margin-top: 20px;
 
     padding:
-        17px 18px;
-
-    background:
-        rgba(255, 255, 255, 0.94);
+        16px 17px;
 
     border:
         1px solid rgba(99, 102, 241, 0.1);
 
-    border-radius:
-        17px;
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.9);
 
     box-shadow:
-        0 10px 30px rgba(30, 35, 60, 0.045);
+        0 8px 24px rgba(24, 28, 50, 0.045);
 }
 
 .loading-card strong {
-    display:
-        block;
+    display: block;
 
-    margin-bottom:
-        4px;
+    margin-bottom: 4px;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    font-weight:
-        750;
+    font-weight: 600;
 }
 
 .loading-card span {
-    display:
-        block;
+    display: block;
 
-    color:
-        #838794;
+    color: #858995;
 
-    font-size:
-        12px;
+    font-size: 11px;
 
-    line-height:
-        1.5;
+    line-height: 1.5;
 }
 
 .spinner {
-    flex:
-        0 0 auto;
+    flex: 0 0 auto;
 
-    width:
-        27px;
-
-    height:
-        27px;
+    width: 25px;
+    height: 25px;
 
     border:
-        3px solid #e5e6ef;
+        3px solid #e7e8ef;
 
     border-top-color:
         #6366f1;
 
-    border-radius:
-        50%;
+    border-radius: 50%;
 
     animation:
         spin 0.8s linear infinite;
@@ -692,8 +614,7 @@ button {
 
 @keyframes spin {
     to {
-        transform:
-            rotate(360deg);
+        transform: rotate(360deg);
     }
 }
 
@@ -703,43 +624,34 @@ button {
    ========================================================= */
 
 .results {
-    margin-top:
-        50px;
+    margin-top: 38px;
 }
 
 .result-heading {
-    margin-bottom:
-        22px;
+    margin-bottom: 18px;
 }
 
 .result-heading h2 {
     margin:
-        15px 0 7px;
+        13px 0 6px;
 
-    font-size:
-        28px;
+    font-family:
+        "Manrope",
+        sans-serif;
 
-    line-height:
-        1.15;
+    font-size: 24px;
 
-    letter-spacing:
-        -1px;
+    font-weight: 700;
 
-    font-weight:
-        800;
+    letter-spacing: -0.7px;
 }
 
 .result-heading p {
     margin: 0;
 
-    color:
-        #7d818e;
+    color: #81848f;
 
-    font-size:
-        13px;
-
-    line-height:
-        1.6;
+    font-size: 12px;
 }
 
 
@@ -748,29 +660,21 @@ button {
    ========================================================= */
 
 .result-card {
-    overflow:
-        hidden;
+    overflow: hidden;
 
-    margin-bottom:
-        18px;
-
-    background:
-        rgba(255, 255, 255, 0.96);
+    margin-bottom: 15px;
 
     border:
-        1px solid rgba(24, 28, 45, 0.07);
+        1px solid rgba(24, 27, 40, 0.07);
 
-    border-radius:
-        20px;
+    border-radius: 18px;
+
+    background:
+        rgba(255, 255, 255, 0.94);
 
     box-shadow:
-        0 11px 32px rgba(30, 35, 60, 0.055);
+        0 9px 28px rgba(24, 28, 50, 0.045);
 }
-
-
-/* =========================================================
-   RESULT HEADER
-   ========================================================= */
 
 .result-header {
     display: flex;
@@ -778,11 +682,10 @@ button {
     align-items: center;
     justify-content: space-between;
 
-    gap:
-        12px;
+    gap: 10px;
 
     padding:
-        17px 17px 13px;
+        15px 15px 11px;
 }
 
 .result-header>div {
@@ -790,11 +693,7 @@ button {
 
     align-items: center;
 
-    gap:
-        10px;
-
-    min-width:
-        0;
+    gap: 10px;
 }
 
 .result-icon {
@@ -803,48 +702,38 @@ button {
     align-items: center;
     justify-content: center;
 
-    width:
-        39px;
+    width: 37px;
+    height: 37px;
 
-    height:
-        39px;
+    flex: 0 0 auto;
 
-    flex:
-        0 0 auto;
-
-    border-radius:
-        11px;
+    border-radius: 11px;
 
     background:
-        #f1f2ff;
+        #f1f2fa;
 
-    font-size:
-        18px;
+    font-size: 17px;
 }
 
 .result-header h3 {
     margin:
-        0 0 3px;
+        0 0 2px;
 
-    font-size:
-        14px;
+    font-family:
+        "Manrope",
+        sans-serif;
 
-    line-height:
-        1.25;
+    font-size: 14px;
 
-    font-weight:
-        750;
+    font-weight: 700;
 }
 
 .result-header span {
-    color:
-        #8a8e9b;
+    color: #8c909c;
 
-    font-size:
-        10px;
+    font-size: 10px;
 
-    line-height:
-        1.3;
+    font-weight: 400;
 }
 
 
@@ -853,51 +742,39 @@ button {
    ========================================================= */
 
 .copy-btn {
-    flex:
-        0 0 auto;
+    flex: 0 0 auto;
 
     padding:
-        8px 11px;
+        7px 10px;
 
-    border:
-        1px solid rgba(30, 35, 60, 0.06);
-
-    border-radius:
-        9px;
+    border-radius: 9px;
 
     background:
-        #f3f4f7;
+        #f0f1f5;
 
-    color:
-        #5d6170;
+    color: #606470;
 
-    font-size:
-        11px;
+    font-size: 10px;
 
-    font-weight:
-        750;
+    font-weight: 600;
 
-    white-space:
-        nowrap;
+    white-space: nowrap;
 }
 
 .copy-btn:hover {
     background:
-        #e9eaff;
+        #e5e6f0;
 
     color:
-        #575bd8;
-
-    border-color:
-        rgba(99, 102, 241, 0.12);
+        #4f52ce;
 }
 
 .copy-btn:active {
     transform:
-        translateY(1px) scale(0.97);
+        scale(0.95);
 
     background:
-        #dedffb;
+        #dcddef;
 }
 
 
@@ -906,32 +783,26 @@ button {
    ========================================================= */
 
 .result-text {
-    display:
-        block;
+    display: block;
 
     width:
-        calc(100% - 34px);
+        calc(100% - 30px);
 
-    min-height:
-        270px;
+    min-height: 270px;
 
     margin:
-        0 17px 17px;
+        0 15px 15px;
 
-    padding:
-        15px;
+    padding: 14px;
 
-    resize:
-        vertical;
-
-    outline:
-        none;
+    resize: vertical;
 
     border:
-        1px solid rgba(30, 35, 60, 0.07);
+        1px solid rgba(24, 27, 40, 0.07);
 
-    border-radius:
-        14px;
+    border-radius: 13px;
+
+    outline: none;
 
     background:
         #f8f9fc;
@@ -939,16 +810,9 @@ button {
     color:
         #292c36;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    line-height:
-        1.75;
-
-    transition:
-        border-color 0.16s ease,
-        background 0.16s ease,
-        box-shadow 0.16s ease;
+    line-height: 1.7;
 }
 
 .result-text:focus {
@@ -959,7 +823,7 @@ button {
         #ffffff;
 
     box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.06);
+        0 0 0 3px rgba(99, 102, 241, 0.055);
 }
 
 
@@ -973,23 +837,15 @@ button {
     align-items: center;
     justify-content: center;
 
-    gap:
-        7px;
+    gap: 7px;
 
-    margin-top:
-        48px;
+    margin-top: 42px;
 
-    color:
-        #9ca0ac;
+    color: #a1a4ae;
 
-    font-size:
-        10px;
+    font-size: 10px;
 
-    font-weight:
-        600;
-
-    letter-spacing:
-        0.1px;
+    font-weight: 500;
 }
 
 
@@ -998,8 +854,7 @@ button {
    ========================================================= */
 
 .hidden {
-    display:
-        none !important;
+    display: none !important;
 }
 
 
@@ -1010,28 +865,32 @@ button {
 @media (min-width: 640px) {
 
     .app {
-        padding-top:
-            34px;
+        padding-top: 32px;
     }
 
     .header {
-        margin-bottom:
-            76px;
+        margin-bottom: 55px;
     }
 
     .hero {
-        margin-bottom:
-            42px;
+        margin-bottom: 34px;
+    }
+
+    .hero h1 {
+        font-size: 42px;
     }
 
     .upload-card {
         padding:
-            52px 30px;
+            46px 30px;
+    }
+
+    .action-section {
+        margin-top: 22px;
     }
 
     .result-text {
-        min-height:
-            300px;
+        min-height: 300px;
     }
 }
 
@@ -1046,194 +905,93 @@ button {
         width:
             calc(100% - 22px);
 
-        padding-top:
-            18px;
-
-        padding-bottom:
-            38px;
+        padding-top: 18px;
     }
 
     .header {
-        margin-bottom:
-            48px;
+        margin-bottom: 34px;
     }
 
     .logo {
-        font-size:
-            19px;
+        font-size: 19px;
     }
 
     .subtitle {
-        font-size:
-            10px;
-    }
-
-    .hero {
-        margin-bottom:
-            30px;
+        font-size: 10px;
     }
 
     .hero h1 {
-        max-width:
-            100%;
+        max-width: 360px;
 
-        margin-top:
-            16px;
+        font-size: 31px;
 
-        font-size:
-            34px;
+        line-height: 1.13;
 
-        line-height:
-            1.06;
-
-        letter-spacing:
-            -1.5px;
+        letter-spacing: -1.15px;
     }
 
     .hero p {
-        font-size:
-            14px;
+        font-size: 13px;
 
-        line-height:
-            1.65;
+        max-width: 340px;
     }
 
     .upload-card {
         padding:
             34px 17px;
 
-        border-radius:
-            20px;
+        border-radius: 20px;
     }
 
     .upload-icon {
-        width:
-            64px;
+        width: 58px;
+        height: 58px;
 
-        height:
-            64px;
+        margin-bottom: 15px;
 
-        border-radius:
-            17px;
+        border-radius: 17px;
 
-        font-size:
-            27px;
+        font-size: 25px;
     }
 
     .upload-card h2 {
-        font-size:
-            19px;
+        font-size: 18px;
     }
 
     .upload-card p {
-        font-size:
-            13px;
+        font-size: 12.5px;
     }
 
-    .secondary-btn {
-        min-height:
-            45px;
-
-        padding:
-            11px 17px;
-    }
-
-    .section {
-        margin-top:
-            28px;
-    }
-
-    .action-section {
-        margin-top:
-            19px;
-    }
-
-    .generate-btn {
-        min-height:
-            50px;
-
-        font-size:
-            14px;
-
-        border-radius:
-            13px;
-    }
-
-    .results {
-        margin-top:
-            42px;
-    }
-
-    .result-heading h2 {
-        font-size:
-            25px;
-
-        letter-spacing:
-            -0.8px;
+    .preview-card {
+        border-radius: 16px;
     }
 
     .result-card {
-        border-radius:
-            18px;
+        border-radius: 17px;
     }
 
     .result-header {
         padding:
-            14px 13px 11px;
-    }
-
-    .result-icon {
-        width:
-            37px;
-
-        height:
-            37px;
-
-        font-size:
-            17px;
-    }
-
-    .result-header h3 {
-        font-size:
-            14px;
-    }
-
-    .result-header span {
-        font-size:
-            10px;
-    }
-
-    .copy-btn {
-        padding:
-            7px 9px;
-
-        font-size:
-            10px;
+            13px;
     }
 
     .result-text {
         width:
             calc(100% - 26px);
 
-        min-height:
-            320px;
+        min-height: 320px;
 
         margin:
             0 13px 13px;
 
-        padding:
-            14px;
+        padding: 13px;
 
-        border-radius:
-            13px;
-
-        font-size:
-            13px;
+        font-size: 13px;
     }
 
-    .footer {
-        margin-top:
-            40px;
+    .copy-btn {
+        padding:
+            7px 9px;
     }
 }
 
@@ -1249,49 +1007,28 @@ button {
             calc(100% - 18px);
     }
 
-    .header {
-        margin-bottom:
-            40px;
-    }
-
     .hero h1 {
-        font-size:
-            31px;
+        font-size: 29px;
 
-        letter-spacing:
-            -1.2px;
+        letter-spacing: -1px;
     }
 
-    .upload-card {
-        padding:
-            30px 14px;
-    }
-
-    .result-heading h2 {
-        font-size:
-            23px;
-    }
-
-    .result-header {
-        gap:
-            8px;
+    .hero p {
+        font-size: 12.5px;
     }
 
     .result-header h3 {
-        font-size:
-            13px;
+        font-size: 13px;
     }
 
     .result-header span {
-        font-size:
-            9px;
+        font-size: 9px;
     }
 
     .copy-btn {
         padding:
             7px 8px;
 
-        font-size:
-            9px;
+        font-size: 9px;
     }
 }
