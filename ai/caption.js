@@ -1,6 +1,6 @@
 // ==========================================
 // PostAI
-// Natural Caption Generator
+// Natural Affiliate Caption Generator
 // ==========================================
 
 import {
@@ -24,6 +24,7 @@ export async function generateCaptions(
 
     }
 
+
     // ======================================
     // ANALYZE IMAGE
     // ======================================
@@ -35,7 +36,7 @@ export async function generateCaptions(
 
 
     // ======================================
-    // NORMALIZE DATA
+    // NORMALIZE
     // ======================================
 
     const product =
@@ -45,7 +46,7 @@ export async function generateCaptions(
 
 
     // ======================================
-    // GENERATE BOTH
+    // RETURN BOTH
     // ======================================
 
     return {
@@ -66,50 +67,51 @@ export async function generateCaptions(
 
 
 // ==========================================
-// NORMALIZE PRODUCT INFO
+// NORMALIZE PRODUCT DATA
 // ==========================================
 
 function normalizeProductInfo(
     data
 ) {
 
+    const emptyProduct = {
+
+        type: "",
+        description: "",
+        size: "",
+        quantity: "",
+        features: [],
+        usage: "",
+        extra: ""
+
+    };
+
+
     if (!data) {
 
-        return {
-
-            name: "",
-            description: "",
-            price: "",
-            features: []
-
-        };
+        return emptyProduct;
 
     }
 
 
-    // --------------------------------------
-    // STRING RESULT
-    // --------------------------------------
+    // ======================================
+    // STRING
+    // ======================================
 
     if (
         typeof data === "string"
     ) {
 
-        return {
-
-            name: data.trim(),
-            description: data.trim(),
-            price: "",
-            features: []
-
-        };
+        return parseText(
+            data
+        );
 
     }
 
 
-    // --------------------------------------
-    // ARRAY RESULT
-    // --------------------------------------
+    // ======================================
+    // ARRAY
+    // ======================================
 
     if (
         Array.isArray(data)
@@ -127,48 +129,68 @@ function normalizeProductInfo(
                 .join(" ")
                 .trim();
 
-        return {
-
-            name: text,
-            description: text,
-            price: "",
-            features: []
-
-        };
+        return parseText(
+            text
+        );
 
     }
 
 
-    // --------------------------------------
-    // OBJECT RESULT
-    // --------------------------------------
+    // ======================================
+    // OBJECT
+    // ======================================
 
     return {
 
-        name:
-            data.name ||
-            data.title ||
-            data.product_name ||
-            data.generated_text ||
-            data.text ||
-            "",
+        type:
+            cleanText(
+                data.type ||
+                data.product_type ||
+                data.category ||
+                ""
+            ),
 
         description:
-            data.description ||
-            data.generated_text ||
-            data.text ||
-            "",
+            cleanText(
+                data.description ||
+                data.generated_text ||
+                data.text ||
+                ""
+            ),
 
-        price:
-            data.price ||
-            "",
+        size:
+            cleanText(
+                data.size ||
+                data.volume ||
+                data.capacity ||
+                ""
+            ),
+
+        quantity:
+            cleanText(
+                data.quantity ||
+                data.amount ||
+                ""
+            ),
 
         features:
-            Array.isArray(
+            normalizeFeatures(
                 data.features
+            ),
+
+        usage:
+            cleanText(
+                data.usage ||
+                data.use ||
+                ""
+            ),
+
+        extra:
+            cleanText(
+                data.extra ||
+                data.details ||
+                ""
             )
-                ? data.features
-                : []
 
     };
 
@@ -176,152 +198,633 @@ function normalizeProductInfo(
 
 
 // ==========================================
-// REELS CAPTION
+// PARSE RAW TEXT
+// ==========================================
+
+function parseText(
+    text
+) {
+
+    const clean =
+        cleanText(
+            text
+        );
+
+
+    return {
+
+        type:
+            detectProductType(
+                clean
+            ),
+
+        description:
+            clean,
+
+        size:
+            detectSize(
+                clean
+            ),
+
+        quantity:
+            detectQuantity(
+                clean
+            ),
+
+        features:
+            [],
+
+        usage:
+            "",
+
+        extra:
+            ""
+
+    };
+
+}
+
+
+// ==========================================
+// PRODUCT TYPE
+// ==========================================
+
+function detectProductType(
+    text
+) {
+
+    const lower =
+        text.toLowerCase();
+
+
+    const types = [
+
+        [
+            [
+                "cleansing milk",
+                "คลีนซิ่งมิลค์",
+                "cleansing"
+            ],
+            "คลีนซิ่งมิลค์"
+        ],
+
+        [
+            [
+                "micellar",
+                "ไมเซลล่า"
+            ],
+            "ไมเซลล่า วอเตอร์"
+        ],
+
+        [
+            [
+                "sunscreen",
+                "กันแดด"
+            ],
+            "ครีมกันแดด"
+        ],
+
+        [
+            [
+                "shampoo",
+                "แชมพู"
+            ],
+            "แชมพู"
+        ],
+
+        [
+            [
+                "conditioner",
+                "ครีมนวด"
+            ],
+            "ครีมนวดผม"
+        ],
+
+        [
+            [
+                "face wash",
+                "facial cleanser",
+                "โฟมล้างหน้า",
+                "คลีนเซอร์"
+            ],
+            "โฟมล้างหน้า"
+        ],
+
+        [
+            [
+                "serum",
+                "เซรั่ม"
+            ],
+            "เซรั่ม"
+        ],
+
+        [
+            [
+                "lotion",
+                "โลชั่น"
+            ],
+            "โลชั่น"
+        ],
+
+        [
+            [
+                "cream",
+                "ครีม"
+            ],
+            "ครีมบำรุงผิว"
+        ],
+
+        [
+            [
+                "mop",
+                "ไม้ถูพื้น"
+            ],
+            "ไม้ถูพื้น"
+        ],
+
+        [
+            [
+                "broom",
+                "ไม้กวาด"
+            ],
+            "ไม้กวาด"
+        ],
+
+        [
+            [
+                "storage",
+                "กล่องเก็บของ",
+                "กล่องจัดเก็บ"
+            ],
+            "กล่องจัดเก็บของ"
+        ],
+
+        [
+            [
+                "rack",
+                "shelf",
+                "ชั้นวาง"
+            ],
+            "ชั้นวางของ"
+        ],
+
+        [
+            [
+                "egg cooker",
+                "เครื่องต้มไข่"
+            ],
+            "เครื่องต้มไข่"
+        ],
+
+        [
+            [
+                "vacuum",
+                "เครื่องดูดฝุ่น"
+            ],
+            "เครื่องดูดฝุ่น"
+        ]
+
+    ];
+
+
+    for (
+        const [keywords, result]
+        of types
+    ) {
+
+        for (
+            const keyword
+            of keywords
+        ) {
+
+            if (
+                lower.includes(
+                    keyword
+                )
+            ) {
+
+                return result;
+
+            }
+
+        }
+
+    }
+
+
+    return "ของใช้ชิ้นนี้";
+
+}
+
+
+// ==========================================
+// SIZE
+// ==========================================
+
+function detectSize(
+    text
+) {
+
+    const match =
+        text.match(
+            /(\d+(?:\.\d+)?)\s*(ml|มล|g|กรัม|kg|กก|l|ลิตร)/i
+        );
+
+
+    if (!match) {
+
+        return "";
+
+    }
+
+
+    return match[0];
+
+}
+
+
+// ==========================================
+// QUANTITY
+// ==========================================
+
+function detectQuantity(
+    text
+) {
+
+    const patterns = [
+
+        /แพ็ก\s*(\d+)/i,
+
+        /pack\s*(\d+)/i,
+
+        /(\d+)\s*ชิ้น/i,
+
+        /(\d+)\s*ขวด/i,
+
+        /(\d+)\s*กล่อง/i,
+
+        /(\d+)\s*อัน/i,
+
+        /(\d+)\s*pcs/i
+
+    ];
+
+
+    for (
+        const pattern
+        of patterns
+    ) {
+
+        const match =
+            text.match(
+                pattern
+            );
+
+
+        if (match) {
+
+            if (
+                match[0]
+                    .toLowerCase()
+                    .includes("แพ็ก")
+            ) {
+
+                return match[0];
+
+            }
+
+
+            return `${match[1]} ชิ้น`;
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// ==========================================
+// FEATURES
+// ==========================================
+
+function normalizeFeatures(
+    features
+) {
+
+    if (
+        !Array.isArray(features)
+    ) {
+
+        return [];
+
+    }
+
+
+    return features
+        .map(
+            feature =>
+                cleanText(
+                    feature
+                )
+        )
+        .filter(Boolean)
+        .slice(
+            0,
+            5
+        );
+
+}
+
+
+// ==========================================
+// REELS
 // ==========================================
 
 function generateReelsCaption(
     product
 ) {
 
-    const productName =
-        product.name ||
-        "ของชิ้นนี้";
+    const type =
+        product.type ||
+        "ของใช้ชิ้นนี้";
 
 
-    const description =
-        makeNaturalDescription(
+    const details =
+        buildProductDetails(
             product
         );
 
 
-    return `🔥 เห็นแล้วแบบ… เออ อันนี้น่าใช้
+    const featureText =
+        buildFeatureText(
+            product
+        );
 
-ใครกำลังหาของแบบนี้อยู่ ขอป้ายยาตัวนี้ไว้ก่อนเลย 👀
 
-${description}
+    return `🔗 [แปะ Affiliate Link ตรงนี้]
 
-เป็นของที่ดูแล้วรู้สึกว่า
-“มีไว้ก็น่าจะได้ใช้บ่อยกว่าที่คิด” 😂
+👀 อันนี้คนที่กำลังหาอยู่ต้องลองส่อง!
 
-ใครสนใจลองส่องรายละเอียดดูก่อนได้เลย
-เผื่อเจอของที่กำลังหาอยู่ 👇
+${type} ที่ดูแล้วน่าใช้กว่าที่คิด ✨
 
-[ใส่ Affiliate Link ตรงนี้]
+${details}
 
-#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #ของดีบอกต่อ`;
+${featureText}
+
+ใครกำลังมองหาของแบบนี้อยู่ ลองกดเข้าไปดูรายละเอียดก่อนได้เลย 👇
+
+#ของน่าใช้ #ป้ายยา #ของดีบอกต่อ #น่าใช้`;
 }
 
 
 // ==========================================
-// FACEBOOK CAPTION
+// FACEBOOK
 // ==========================================
 
 function generateFacebookCaption(
     product
 ) {
 
-    const description =
-        makeNaturalDescription(
+    const type =
+        product.type ||
+        "ของใช้ชิ้นนี้";
+
+
+    const details =
+        buildProductDetails(
             product
         );
 
 
-    const priceText =
-        product.price
-            ? `\n\n💸 ${product.price}`
-            : "";
+    const featureText =
+        buildFeatureText(
+            product
+        );
 
 
-    return `[ใส่ Affiliate Link ตรงนี้]
+    return `🔗 [แปะ Affiliate Link ตรงนี้]
 
-👀 เจอของน่าใช้มาอีกแล้ว
+✨ ใครกำลังหาของแบบนี้อยู่ ลองดูตัวนี้ก่อน!
 
-${description}${priceText}
+🛍️ ${capitalizeFirst(
+        type
+    )}
 
-ชอบตรงที่เป็นของที่ดูแล้วเอาไปใช้ในชีวิตประจำวันได้จริง
-ใครกำลังมองหาของประมาณนี้ ลองเข้าไปดูรายละเอียดก่อนก็ได้
+${details}
 
-บางทีของที่ดูเหมือนธรรมดา
-แต่พอมีติดบ้านไว้แล้วมันสะดวกขึ้นเยอะเลย 😂
+${featureText}
 
-👇 ใครสนใจกดเข้าไปส่องได้เลย
+จุดที่น่าสนใจคือเป็นของที่เอาไปใช้ในชีวิตประจำวันได้จริง เหมาะกับคนที่กำลังมองหาตัวช่วยดี ๆ แบบนี้อยู่ 👀
 
-[ใส่ Affiliate Link ตรงนี้]
+ถ้าดูแล้วตรงกับที่กำลังหาอยู่ ลองกดเข้าไปส่องรายละเอียดเพิ่มเติมก่อนได้เลย 👇
 
 #ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #ของดีบอกต่อ`;
 }
 
 
 // ==========================================
-// NATURAL DESCRIPTION
+// BUILD PRODUCT DETAILS
 // ==========================================
 
-function makeNaturalDescription(
+function buildProductDetails(
     product
 ) {
 
-    const name =
-        cleanText(
-            product.name
-        );
+    const parts = [];
 
-
-    const description =
-        cleanText(
-            product.description
-        );
-
-
-    // --------------------------------------
-    // HAVE NAME + DESCRIPTION
-    // --------------------------------------
 
     if (
-        name &&
-        description &&
-        description !== name
+        product.description
     ) {
 
-        return `${name} 👀
-
-จากที่เห็นในรูป จุดที่น่าสนใจคือ ${description}`;
-
-    }
-
-
-    // --------------------------------------
-    // HAVE NAME
-    // --------------------------------------
-
-    if (name) {
-
-        return `ตัวนี้คือ ${name} 👀`;
-
-    }
+        const description =
+            cleanDescription(
+                product.description
+            );
 
 
-    // --------------------------------------
-    // HAVE DESCRIPTION
-    // --------------------------------------
+        if (
+            description
+        ) {
 
-    if (description) {
+            parts.push(
+                description
+            );
 
-        return `จากรูปแล้วตัวนี้ดูน่าสนใจตรงที่ ${description} 👀`;
+        }
 
     }
 
 
-    // --------------------------------------
-    // NOTHING
-    // --------------------------------------
+    if (
+        product.size &&
+        !containsValue(
+            product.description,
+            product.size
+        )
+    ) {
 
-    return "ตัวนี้เห็นแล้วรู้สึกว่าน่าเอามาลองใช้ดูเลย 👀";
+        parts.push(
+            `ขนาด ${product.size}`
+        );
+
+    }
+
+
+    if (
+        product.quantity &&
+        !containsValue(
+            product.description,
+            product.quantity
+        )
+    ) {
+
+        parts.push(
+            product.quantity
+        );
+
+    }
+
+
+    if (
+        product.usage
+    ) {
+
+        parts.push(
+            product.usage
+        );
+
+    }
+
+
+    if (
+        product.extra
+    ) {
+
+        parts.push(
+            product.extra
+        );
+
+    }
+
+
+    if (
+        parts.length === 0
+    ) {
+
+        return `เป็น${product.type}ที่เหมาะสำหรับใช้ในชีวิตประจำวัน ✨`;
+
+    }
+
+
+    return parts
+        .join(" ")
+        .trim();
 
 }
 
 
 // ==========================================
-// CLEAN TEXT
+// FEATURES TEXT
+// ==========================================
+
+function buildFeatureText(
+    product
+) {
+
+    if (
+        !product.features ||
+        product.features.length === 0
+    ) {
+
+        return "";
+
+    }
+
+
+    const features =
+        product.features
+            .slice(
+                0,
+                4
+            )
+            .map(
+                feature =>
+                    `✨ ${feature}`
+            )
+            .join("\n");
+
+
+    return `จุดที่น่าสนใจ 👇\n${features}`;
+
+}
+
+
+// ==========================================
+// CLEAN DESCRIPTION
+// ==========================================
+
+function cleanDescription(
+    text
+) {
+
+    if (!text) {
+
+        return "";
+
+    }
+
+
+    let result =
+        cleanText(
+            text
+        );
+
+
+    // Remove common AI labels
+
+    result =
+        result.replace(
+            /^(description|product description|รายละเอียดสินค้า|ข้อมูลสินค้า)\s*[:：-]?\s*/i,
+            ""
+        );
+
+
+    // Remove price information
+
+    result =
+        result.replace(
+            /(?:฿|บาท)\s*\d[\d,.]*/gi,
+            ""
+        );
+
+
+    result =
+        result.replace(
+            /\d[\d,.]*\s*(?:บาท|฿)/gi,
+            ""
+        );
+
+
+    // Remove URLs
+
+    result =
+        result.replace(
+            /https?:\/\/\S+/gi,
+            ""
+        );
+
+
+    return result.trim();
+
+}
+
+
+// ==========================================
+// TEXT HELPERS
 // ==========================================
 
 function cleanText(
@@ -337,15 +840,62 @@ function cleanText(
 
     }
 
+
     return String(value)
+
         .replace(
             /\s+/g,
             " "
         )
+
         .replace(
             /^["'`]+|["'`]+$/g,
             ""
         )
+
         .trim();
+
+}
+
+
+function containsValue(
+    text,
+    value
+) {
+
+    if (
+        !text ||
+        !value
+    ) {
+
+        return false;
+
+    }
+
+
+    return String(text)
+        .toLowerCase()
+        .includes(
+            String(value)
+                .toLowerCase()
+        );
+
+}
+
+
+function capitalizeFirst(
+    text
+) {
+
+    if (!text) {
+
+        return "";
+
+    }
+
+
+    return text.charAt(0)
+        .toUpperCase() +
+        text.slice(1);
 
 }
