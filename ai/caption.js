@@ -1,7 +1,15 @@
 // ==========================================
 // PostAI
 // Caption Generator
-// Gemini 2.5 Flash via Vercel API
+// Gemini via Vercel API
+// ==========================================
+
+const API_URL =
+    "https://post-ai-caption.vercel.app/api/generate";
+
+
+// ==========================================
+// GENERATE CAPTION
 // ==========================================
 
 export async function generateCaption(
@@ -17,75 +25,101 @@ export async function generateCaption(
     }
 
 
-    // ======================================
-    // CALL VERCEL API
-    // ======================================
+    try {
 
-    const response =
-        await fetch(
-            "https://post-ai-caption.vercel.app/api/generate",
-            {
+        const response =
+            await fetch(
+                API_URL,
+                {
 
-                method:
-                    "POST",
+                    method:
+                        "POST",
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+                    headers: {
 
-                body:
-                    JSON.stringify({
+                        "Content-Type":
+                            "application/json"
 
-                        image:
-                            imageData
+                    },
 
-                    })
+                    body:
+                        JSON.stringify({
 
-            }
-        );
+                            image:
+                                imageData
 
+                        })
 
-    // ======================================
-    // READ RESPONSE
-    // ======================================
-
-    const data =
-        await response.json();
+                }
+            );
 
 
-    // ======================================
-    // ERROR
-    // ======================================
+        // ==================================
+        // READ RESPONSE
+        // ==================================
 
-    if (!response.ok) {
+        const data =
+            await response.json();
+
+
+        // ==================================
+        // ERROR
+        // ==================================
+
+        if (!response.ok) {
+
+            console.error(
+                "PostAI API Error:",
+                data
+            );
+
+
+            throw new Error(
+                data?.error ||
+                "ไม่สามารถสร้างแคปชันได้"
+            );
+
+        }
+
+
+        // ==================================
+        // RESULT
+        // ==================================
+
+        if (!data?.result) {
+
+            throw new Error(
+                "Gemini ไม่ได้ส่งแคปชันกลับมา"
+            );
+
+        }
+
+
+        return data.result;
+
+    }
+
+    catch (error) {
 
         console.error(
-            "PostAI API Error:",
-            data
+            "Caption generation error:",
+            error
         );
 
-        throw new Error(
-            data.error ||
-            "ไม่สามารถสร้างแคปชันได้"
-        );
+
+        if (
+            error instanceof TypeError
+        ) {
+
+            throw new Error(
+                "ไม่สามารถเชื่อมต่อ Vercel API ได้"
+            );
+
+        }
+
+
+        throw error;
 
     }
-
-
-    // ======================================
-    // RESULT
-    // ======================================
-
-    if (!data.result) {
-
-        throw new Error(
-            "Gemini ไม่ได้ส่งแคปชันกลับมา"
-        );
-
-    }
-
-
-    return data.result;
 
 }

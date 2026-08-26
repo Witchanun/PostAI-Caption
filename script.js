@@ -1,8 +1,6 @@
 // ==========================================
 // PostAI
-// Frontend Script
-// Gemini 2.5 Flash
-// Generate Reel + Facebook at once
+// Frontend
 // ==========================================
 
 import {
@@ -44,14 +42,9 @@ const actionsSection =
         "actionsSection"
     );
 
-const reelsBtn =
+const generateBtn =
     document.getElementById(
-        "reelsBtn"
-    );
-
-const facebookBtn =
-    document.getElementById(
-        "facebookBtn"
+        "generateBtn"
     );
 
 const loadingSection =
@@ -64,14 +57,24 @@ const resultSection =
         "resultSection"
     );
 
-const resultText =
+const reelsResult =
     document.getElementById(
-        "resultText"
+        "reelsResult"
     );
 
-const copyBtn =
+const facebookResult =
     document.getElementById(
-        "copyBtn"
+        "facebookResult"
+    );
+
+const copyReelsBtn =
+    document.getElementById(
+        "copyReelsBtn"
+    );
+
+const copyFacebookBtn =
+    document.getElementById(
+        "copyFacebookBtn"
     );
 
 
@@ -79,9 +82,11 @@ const copyBtn =
 // STATE
 // ==========================================
 
-let selectedFile = null;
+let selectedFile =
+    null;
 
-let imageData = null;
+let imageData =
+    null;
 
 
 // ==========================================
@@ -110,26 +115,20 @@ if (imageInput) {
 
 
 // ==========================================
-// CTRL + V
+// PASTE IMAGE
 // ==========================================
 
 document.addEventListener(
     "paste",
     event => {
 
-        const clipboardData =
-            event.clipboardData;
-
-        if (!clipboardData) {
-            return;
-        }
-
         const items =
-            clipboardData.items;
+            event.clipboardData?.items;
 
         if (!items) {
             return;
         }
+
 
         for (
             const item of items
@@ -148,6 +147,7 @@ document.addEventListener(
                 if (!file) {
                     return;
                 }
+
 
                 loadImage(file);
 
@@ -221,13 +221,16 @@ if (dropZone) {
                 "dragover"
             );
 
+
             const file =
                 event.dataTransfer
                     ?.files?.[0];
 
+
             if (!file) {
                 return;
             }
+
 
             loadImage(file);
 
@@ -271,80 +274,14 @@ function loadImage(
     reader.onload =
         event => {
 
-            imageData =
+            const originalData =
                 event.target.result;
 
 
-            // ==============================
-            // PREVIEW
-            // ==============================
-
-            if (previewImage) {
-
-                previewImage.src =
-                    imageData;
-
-            }
-
-
-            // ==============================
-            // SHOW SECTIONS
-            // ==============================
-
-            if (previewSection) {
-
-                previewSection.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-
-            if (actionsSection) {
-
-                actionsSection.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-
-            // ==============================
-            // RESET RESULT
-            // ==============================
-
-            if (resultSection) {
-
-                resultSection.classList.add(
-                    "hidden"
-                );
-
-            }
-
-
-            if (resultText) {
-
-                resultText.value =
-                    "";
-
-            }
-
-
-            // ==============================
-            // SCROLL
-            // ==============================
-
-            if (previewSection) {
-
-                previewSection.scrollIntoView({
-                    behavior:
-                        "smooth",
-
-                    block:
-                        "center"
-                });
-
-            }
+            // Resize/compress ก่อนส่ง API
+            prepareImage(
+                originalData
+            );
 
         };
 
@@ -367,6 +304,187 @@ function loadImage(
 
 
 // ==========================================
+// PREPARE IMAGE
+// ==========================================
+
+function prepareImage(
+    originalData
+) {
+
+    const img =
+        new Image();
+
+
+    img.onload =
+        () => {
+
+            const maxSize =
+                1600;
+
+
+            let width =
+                img.naturalWidth;
+
+            let height =
+                img.naturalHeight;
+
+
+            // ==============================
+            // RESIZE
+            // ==============================
+
+            if (
+                width > maxSize ||
+                height > maxSize
+            ) {
+
+                if (
+                    width > height
+                ) {
+
+                    height =
+                        Math.round(
+                            height *
+                            maxSize /
+                            width
+                        );
+
+                    width =
+                        maxSize;
+
+                }
+
+                else {
+
+                    width =
+                        Math.round(
+                            width *
+                            maxSize /
+                            height
+                        );
+
+                    height =
+                        maxSize;
+
+                }
+
+            }
+
+
+            const canvas =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            canvas.width =
+                width;
+
+            canvas.height =
+                height;
+
+
+            const ctx =
+                canvas.getContext(
+                    "2d"
+                );
+
+
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+            );
+
+
+            // ==============================
+            // JPEG
+            // ==============================
+
+            imageData =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.82
+                );
+
+
+            // ==============================
+            // PREVIEW
+            // ==============================
+
+            if (previewImage) {
+
+                previewImage.src =
+                    imageData;
+
+            }
+
+
+            // ==============================
+            // SHOW
+            // ==============================
+
+            previewSection?.classList.remove(
+                "hidden"
+            );
+
+            actionsSection?.classList.remove(
+                "hidden"
+            );
+
+
+            resultSection?.classList.add(
+                "hidden"
+            );
+
+
+            if (reelsResult) {
+
+                reelsResult.value =
+                    "";
+
+            }
+
+
+            if (facebookResult) {
+
+                facebookResult.value =
+                    "";
+
+            }
+
+
+            previewSection?.scrollIntoView({
+                behavior:
+                    "smooth",
+
+                block:
+                    "center"
+
+            });
+
+        };
+
+
+    img.onerror =
+        () => {
+
+            alert(
+                "ไม่สามารถประมวลผลรูปภาพได้"
+            );
+
+        };
+
+
+    img.src =
+        originalData;
+
+}
+
+
+// ==========================================
 // REMOVE IMAGE
 // ==========================================
 
@@ -378,7 +496,6 @@ if (removeImageBtn) {
 
             selectedFile =
                 null;
-
 
             imageData =
                 null;
@@ -400,36 +517,30 @@ if (removeImageBtn) {
             }
 
 
-            if (previewSection) {
+            previewSection?.classList.add(
+                "hidden"
+            );
 
-                previewSection.classList.add(
-                    "hidden"
-                );
+            actionsSection?.classList.add(
+                "hidden"
+            );
 
-            }
-
-
-            if (actionsSection) {
-
-                actionsSection.classList.add(
-                    "hidden"
-                );
-
-            }
+            resultSection?.classList.add(
+                "hidden"
+            );
 
 
-            if (resultSection) {
+            if (reelsResult) {
 
-                resultSection.classList.add(
-                    "hidden"
-                );
+                reelsResult.value =
+                    "";
 
             }
 
 
-            if (resultText) {
+            if (facebookResult) {
 
-                resultText.value =
+                facebookResult.value =
                     "";
 
             }
@@ -441,43 +552,21 @@ if (removeImageBtn) {
 
 
 // ==========================================
-// GENERATE BUTTONS
-// ==========================================
-
-// ทั้งสองปุ่มเรียก Generate เดียวกัน
-// เพื่อให้ Gemini สร้าง Reel + Facebook
-// พร้อมกันในครั้งเดียว
-
-if (reelsBtn) {
-
-    reelsBtn.addEventListener(
-        "click",
-        () => {
-
-            generate();
-
-        }
-    );
-
-}
-
-
-if (facebookBtn) {
-
-    facebookBtn.addEventListener(
-        "click",
-        () => {
-
-            generate();
-
-        }
-    );
-
-}
-
-
-// ==========================================
 // GENERATE
+// ==========================================
+
+if (generateBtn) {
+
+    generateBtn.addEventListener(
+        "click",
+        generate
+    );
+
+}
+
+
+// ==========================================
+// GENERATE FUNCTION
 // ==========================================
 
 async function generate() {
@@ -507,49 +596,58 @@ async function generate() {
 
 
         // ==============================
-        // SHOW RESULT
+        // SPLIT RESULT
         // ==============================
 
-        if (resultText) {
-
-            resultText.value =
-                result;
-
-        }
-
-
-        if (resultSection) {
-
-            resultSection.classList.remove(
-                "hidden"
+        const reels =
+            extractSection(
+                result,
+                "=== REELS ===",
+                "=== FACEBOOK ==="
             );
 
-        }
 
-
-        if (resultSection) {
-
-            resultSection.scrollIntoView({
-                behavior:
-                    "smooth",
-
-                block:
-                    "center"
-            });
-
-        }
+        const facebook =
+            extractSection(
+                result,
+                "=== FACEBOOK ===",
+                null
+            );
 
 
         // ==============================
-        // CLEAN IMAGE DATA
+        // DISPLAY
         // ==============================
 
-        // ไม่จำเป็นต้องเก็บรูปต่อหลังเจนเสร็จ
-        // แต่ยังคง preview ไว้ให้ผู้ใช้ดู
+        if (reelsResult) {
 
-        imageData =
-            imageData;
+            reelsResult.value =
+                reels.trim();
 
+        }
+
+
+        if (facebookResult) {
+
+            facebookResult.value =
+                facebook.trim();
+
+        }
+
+
+        resultSection?.classList.remove(
+            "hidden"
+        );
+
+
+        resultSection?.scrollIntoView({
+            behavior:
+                "smooth",
+
+            block:
+                "start"
+
+        });
 
     }
 
@@ -580,6 +678,78 @@ async function generate() {
 
 
 // ==========================================
+// EXTRACT SECTION
+// ==========================================
+
+function extractSection(
+    text,
+    startMarker,
+    endMarker
+) {
+
+    if (!text) {
+        return "";
+    }
+
+
+    const startIndex =
+        text.indexOf(
+            startMarker
+        );
+
+
+    if (startIndex === -1) {
+
+        return text;
+
+    }
+
+
+    const contentStart =
+        startIndex +
+        startMarker.length;
+
+
+    if (!endMarker) {
+
+        return text
+            .slice(
+                contentStart
+            )
+            .trim();
+
+    }
+
+
+    const endIndex =
+        text.indexOf(
+            endMarker,
+            contentStart
+        );
+
+
+    if (endIndex === -1) {
+
+        return text
+            .slice(
+                contentStart
+            )
+            .trim();
+
+    }
+
+
+    return text
+        .slice(
+            contentStart,
+            endIndex
+        )
+        .trim();
+
+}
+
+
+// ==========================================
 // LOADING
 // ==========================================
 
@@ -587,30 +757,20 @@ function setLoading(
     loading
 ) {
 
-    if (!loadingSection) {
-        return;
-    }
-
-
     if (loading) {
 
-        loadingSection.classList.remove(
+        loadingSection?.classList.remove(
             "hidden"
         );
 
 
-        if (reelsBtn) {
+        if (generateBtn) {
 
-            reelsBtn.disabled =
+            generateBtn.disabled =
                 true;
 
-        }
-
-
-        if (facebookBtn) {
-
-            facebookBtn.disabled =
-                true;
+            generateBtn.textContent =
+                "🧠 กำลังคิดแคปชัน...";
 
         }
 
@@ -618,23 +778,18 @@ function setLoading(
 
     else {
 
-        loadingSection.classList.add(
+        loadingSection?.classList.add(
             "hidden"
         );
 
 
-        if (reelsBtn) {
+        if (generateBtn) {
 
-            reelsBtn.disabled =
+            generateBtn.disabled =
                 false;
 
-        }
-
-
-        if (facebookBtn) {
-
-            facebookBtn.disabled =
-                false;
+            generateBtn.textContent =
+                "✨ สร้างแคปชัน";
 
         }
 
@@ -644,65 +799,103 @@ function setLoading(
 
 
 // ==========================================
-// COPY
+// COPY REELS
 // ==========================================
 
-if (copyBtn) {
+if (copyReelsBtn) {
 
-    copyBtn.addEventListener(
+    copyReelsBtn.addEventListener(
         "click",
-        async () => {
+        () => {
 
-            if (
-                !resultText ||
-                !resultText.value
-            ) {
-
-                return;
-
-            }
-
-
-            try {
-
-                await navigator
-                    .clipboard
-                    .writeText(
-                        resultText.value
-                    );
-
-
-                const oldText =
-                    copyBtn.textContent;
-
-
-                copyBtn.textContent =
-                    "✅ คัดลอกแล้ว";
-
-
-                setTimeout(
-                    () => {
-
-                        copyBtn.textContent =
-                            oldText;
-
-                    },
-                    1500
-                );
-
-            }
-
-            catch {
-
-                resultText.select();
-
-                document.execCommand(
-                    "copy"
-                );
-
-            }
+            copyText(
+                reelsResult,
+                copyReelsBtn
+            );
 
         }
     );
+
+}
+
+
+// ==========================================
+// COPY FACEBOOK
+// ==========================================
+
+if (copyFacebookBtn) {
+
+    copyFacebookBtn.addEventListener(
+        "click",
+        () => {
+
+            copyText(
+                facebookResult,
+                copyFacebookBtn
+            );
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// COPY TEXT
+// ==========================================
+
+async function copyText(
+    textarea,
+    button
+) {
+
+    if (
+        !textarea ||
+        !textarea.value
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await navigator
+            .clipboard
+            .writeText(
+                textarea.value
+            );
+
+
+        const oldText =
+            button.textContent;
+
+
+        button.textContent =
+            "✅ คัดลอกแล้ว";
+
+
+        setTimeout(
+            () => {
+
+                button.textContent =
+                    oldText;
+
+            },
+            1500
+        );
+
+    }
+
+    catch {
+
+        textarea.select();
+
+        document.execCommand(
+            "copy"
+        );
+
+    }
 
 }

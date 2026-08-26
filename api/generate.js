@@ -1,98 +1,217 @@
+// ==========================================
+// PostAI
+// Vercel API
+// Gemini 2.5 Flash
+// ==========================================
+
 export default async function handler(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    // ======================================
+    // CORS
+    // ======================================
+
+    res.setHeader(
+        "Access-Control-Allow-Origin",
+        "*"
+    );
+
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "POST, OPTIONS"
+    );
+
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type"
+    );
+
+
+    // ======================================
+    // OPTIONS
+    // ======================================
 
     if (req.method === "OPTIONS") {
-        return res.status(200).end();
+
+        return res
+            .status(200)
+            .end();
+
     }
+
+
+    // ======================================
+    // METHOD
+    // ======================================
 
     if (req.method !== "POST") {
-        return res.status(405).json({
-            error: "Method not allowed"
-        });
+
+        return res
+            .status(405)
+            .json({
+                error:
+                    "Method not allowed"
+            });
+
     }
 
+
     try {
-        const apiKey = process.env.GEMINI_API_KEY;
+
+        // ==================================
+        // API KEY
+        // ==================================
+
+        const apiKey =
+            process.env.GEMINI_API_KEY;
+
 
         if (!apiKey) {
-            throw new Error(
-                "ไม่พบ GEMINI_API_KEY ใน Vercel Environment Variables"
-            );
+
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "ไม่พบ GEMINI_API_KEY ใน Vercel"
+                });
+
         }
+
+
+        // ==================================
+        // REQUEST DATA
+        // ==================================
 
         const {
             image,
             mimeType
         } = req.body || {};
 
+
         if (!image) {
-            return res.status(400).json({
-                error: "ไม่พบรูปสินค้า"
-            });
+
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "ไม่พบรูปสินค้า"
+                });
+
         }
 
-        const base64Image = image.includes(",")
-            ? image.split(",")[1]
-            : image;
+
+        // ==================================
+        // BASE64
+        // ==================================
+
+        const base64Image =
+            image.includes(",")
+                ? image.split(",")[1]
+                : image;
+
+
+        const detectedMimeType =
+            image.match(
+                /^data:(.*?);base64,/
+            )?.[1];
+
 
         const actualMimeType =
             mimeType ||
-            image.match(/^data:(.*?);base64,/)?.[1] ||
+            detectedMimeType ||
             "image/jpeg";
 
+
+        // ==================================
+        // PROMPT
+        // ==================================
+
         const prompt = `
-คุณคือ AI Content Creator สำหรับเพจ Affiliate สินค้า
+คุณคือ AI Content Creator มืออาชีพสำหรับเพจ Affiliate สินค้าในประเทศไทย
 
-วิเคราะห์ภาพสินค้าอย่างละเอียด แล้วเขียนแคปชันภาษาไทยให้เหมือนคนจริงกำลังป้ายยาของที่ตัวเองเห็นว่าน่าสนใจ
+หน้าที่ของคุณคือดูภาพสินค้า แล้วสร้างแคปชันที่ "เหมือนคนจริงกำลังป้ายยา" ไม่ใช่ข้อความจากโบรชัวร์หรือ AI แข็ง ๆ
 
-อ่านข้อมูลจากภาพให้ได้มากที่สุด เช่น:
+วิเคราะห์ภาพอย่างละเอียดก่อนเขียน
+
+ข้อมูลที่ควรพยายามอ่านจากภาพ:
 - ประเภทสินค้า
-- รายละเอียดสินค้า
-- ฟังก์ชัน
-- จุดเด่น
-- วัสดุ
-- ขนาด
-- จำนวน
+- หน้าที่ของสินค้า
 - วิธีใช้งาน
-- เหมาะกับใคร
-- ข้อความสำคัญบนภาพ
+- จุดเด่น
+- ฟังก์ชัน
+- วัสดุ ถ้ามองเห็นหรือระบุได้
+- ขนาด ถ้ามีข้อมูล
+- จำนวน ถ้ามีข้อมูล
+- รูปแบบการใช้งาน
+- ปัญหาที่สินค้าช่วยแก้
+- คนที่น่าจะเหมาะกับสินค้า
+- ข้อความที่เขียนอยู่บนภาพ
 
 กฎสำคัญ:
-1. ใช้ข้อมูลที่มองเห็นจากภาพเป็นหลัก
-2. ห้ามแต่งสเปกสินค้า
-3. ห้ามแต่งราคา
-4. ห้ามแต่งชื่อแบรนด์
-5. ถ้าอ่านข้อมูลไม่ได้ ให้ข้ามข้อมูลนั้น
-6. ไม่ต้องใส่ชื่อสินค้าแบบยาว
-7. ใช้ประเภทของสินค้าแทนชื่อสินค้า
-8. ภาษาไทยต้องเป็นธรรมชาติ
-9. ห้ามเขียนเหมือนโบรชัวร์
-10. ต้องอ่านแล้วรู้สึกว่าน่าสนใจและอยากกดดู
-11. Affiliate Link ต้องอยู่ด้านบน
-12. ห้ามใส่ราคา
-13. ต้องมีรายละเอียดสินค้าจริง
-14. สร้างทั้ง Reel และ Facebook Post
-15. ทั้งสองแบบต้องเขียนต่างกันเล็กน้อย
 
-รูปแบบคำตอบ:
+1. ใช้ข้อมูลจากภาพเป็นหลัก
+2. ห้ามแต่งสเปกที่ไม่มีในภาพ
+3. ห้ามแต่งราคา
+4. ห้ามแต่งแบรนด์
+5. ถ้าอ่านข้อมูลบางอย่างไม่ได้ ให้ไม่ต้องใส่
+6. ไม่ต้องใช้ชื่อสินค้าแบบยาว
+7. เรียกด้วยประเภทสินค้าแทน เช่น "เครื่องต้มไข่", "ไม้ถูพื้น", "ชั้นวางของ"
+8. ต้องบอกรายละเอียดสินค้าจริง ไม่ใช่ชมอย่างเดียว
+9. ภาษาต้องเป็นภาษาไทยธรรมชาติ
+10. ห้ามใช้ภาษาขายของแข็ง ๆ
+11. ห้ามเปิดด้วย "ของชิ้นนี้น่าสนใจมาก"
+12. ห้ามใช้ประโยคซ้ำ ๆ เช่น "ใครกำลังมองหา..." ทุกโพสต์
+13. Hook ต้องน่าสนใจและเกี่ยวข้องกับสินค้า
+14. ให้ความรู้สึกเหมือนเพจเจอของดีแล้วเอามาบอกต่อ
+15. ใช้อีโมจิอย่างพอดี
+16. ห้ามใส่ราคา
+17. Affiliate Link ต้องอยู่ด้านบน
+18. ต้องมีรายละเอียดสินค้าชัดเจน
+19. ต้องมีจุดเด่นจากภาพ
+20. ต้องมีเหตุผลว่าทำไมคนถึงน่าจะสนใจ
+21. Reel และ Facebook ต้องเขียนต่างกัน
+22. ห้ามใส่คำอธิบายเกี่ยวกับการวิเคราะห์ภาพ
+23. ห้ามพูดว่า "จากภาพ"
+24. ห้ามใส่ข้อความ placeholder อื่นนอกจาก "[แปะ Affiliate Link ตรงนี้]"
+25. ห้ามใส่ Markdown code block
+
+สไตล์ Reel:
+
+- เปิดด้วย Hook สั้น ๆ ที่สะดุดตา
+- เล่าปัญหาหรือสถานการณ์ที่คนเจอ
+- แนะนำสินค้า
+- บอกว่ามันทำอะไร
+- บอกจุดเด่นที่เห็นได้จริง
+- ปิดด้วย CTA ที่ชวนกดดู
+- ไม่ต้องยาวเกินไป
+- อ่านแล้วเหมาะกับคลิปสั้น
+
+สไตล์ Facebook:
+
+- เปิดแบบชวนคุยหรือชวนสงสัย
+- อธิบายสินค้าให้ละเอียดกว่า Reel
+- บอกฟังก์ชันและจุดเด่น
+- บอกว่าเหมาะกับใคร
+- ปิดด้วย CTA
+- อ่านง่าย แบ่งย่อหน้า
+- อย่าเขียนเหมือนโฆษณาตรง ๆ
+
+รูปแบบคำตอบต้องเป็น EXACTLY:
 
 === REELS ===
 
 🔗 [แปะ Affiliate Link ตรงนี้]
 
-[Hook ที่ดึงดูด]
+[Hook]
 
-[รายละเอียดสินค้าแบบเป็นธรรมชาติ]
+[เนื้อหาและรายละเอียดสินค้า]
 
 ✨ จุดเด่น
-[จุดเด่นจากภาพ]
+[จุดเด่นของสินค้า]
 
 💡 เหมาะกับ
-[กลุ่มคนที่น่าจะสนใจ]
+[กลุ่มคนที่เหมาะ]
 
-[ประโยคปิดที่ชวนกดดูสินค้า]
+[CTA]
 
 [Hashtags]
 
@@ -101,118 +220,198 @@ export default async function handler(req, res) {
 
 🔗 [แปะ Affiliate Link ตรงนี้]
 
-[เปิดเรื่องแบบน่าสนใจ]
+[Hook]
 
 [รายละเอียดสินค้า]
 
 ✨ จุดเด่น
-[จุดเด่นจากภาพ]
+[จุดเด่นของสินค้า]
 
 💡 เหมาะกับใคร
 [กลุ่มคนที่เหมาะ]
 
-[CTA ที่ชวนกดเข้าไปดูรายละเอียด]
+[CTA]
 
 [Hashtags]
 
-อย่าใส่คำอธิบายเพิ่มเติมนอกเหนือจากสองส่วนนี้
+สร้างเนื้อหาให้ดึงดูด น่าอ่าน และเป็นธรรมชาติ
 `;
+
+
+        // ==================================
+        // GEMINI API
+        // ==================================
 
         const endpoint =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-        const response = await fetch(
-            `${endpoint}?key=${apiKey}`,
-            {
-                method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+        const response =
+            await fetch(
+                `${endpoint}?key=${apiKey}`,
+                {
+                    method:
+                        "POST",
 
-                body: JSON.stringify({
-                    contents: [
-                        {
-                            role: "user",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                            parts: [
+                    body:
+                        JSON.stringify({
+
+                            contents: [
+
                                 {
-                                    text: prompt
-                                },
+                                    role:
+                                        "user",
 
-                                {
-                                    inline_data: {
-                                        mime_type:
-                                            actualMimeType,
+                                    parts: [
 
-                                        data:
-                                            base64Image
-                                    }
+                                        {
+                                            text:
+                                                prompt
+                                        },
+
+                                        {
+                                            inline_data: {
+
+                                                mime_type:
+                                                    actualMimeType,
+
+                                                data:
+                                                    base64Image
+
+                                            }
+
+                                        }
+
+                                    ]
+
                                 }
-                            ]
-                        }
-                    ],
 
-                    generationConfig: {
-                        temperature: 0.8,
-                        maxOutputTokens: 1500
-                    }
-                })
-            }
-        );
+                            ],
+
+                            generationConfig: {
+
+                                temperature:
+                                    0.85,
+
+                                maxOutputTokens:
+                                    1800
+
+                            }
+
+                        })
+
+                }
+            );
+
+
+        // ==================================
+        // GEMINI ERROR
+        // ==================================
 
         if (!response.ok) {
+
             const errorText =
                 await response.text();
+
 
             console.error(
                 "Gemini API error:",
                 errorText
             );
 
-            return res.status(
-                response.status
-            ).json({
-                error: "Gemini API error",
-                details: errorText
-            });
+
+            return res
+                .status(
+                    response.status
+                )
+                .json({
+
+                    error:
+                        "Gemini API Error",
+
+                    details:
+                        errorText
+
+                });
+
         }
+
+
+        // ==================================
+        // RESPONSE
+        // ==================================
 
         const data =
             await response.json();
 
+
         const result =
-            data?.candidates?.[0]
+            data
+                ?.candidates?.[0]
                 ?.content?.parts
                 ?.map(
-                    part => part.text || ""
+                    part =>
+                        part.text || ""
                 )
                 .join("")
                 .trim();
 
+
         if (!result) {
-            throw new Error(
-                "Gemini ไม่ส่งข้อความกลับมา"
-            );
+
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "Gemini ไม่ได้ส่งข้อความกลับมา"
+                });
+
         }
 
-        return res.status(200).json({
-            success: true,
-            result
-        });
 
-    } catch (error) {
+        // ==================================
+        // SUCCESS
+        // ==================================
+
+        return res
+            .status(200)
+            .json({
+
+                success:
+                    true,
+
+                result
+
+            });
+
+    }
+
+    catch (error) {
 
         console.error(
-            "PostAI API error:",
+            "PostAI API Error:",
             error
         );
 
-        return res.status(500).json({
-            success: false,
-            error:
-                error.message ||
-                "เกิดข้อผิดพลาดจาก Server"
-        });
+
+        return res
+            .status(500)
+            .json({
+
+                success:
+                    false,
+
+                error:
+                    error?.message ||
+                    "เกิดข้อผิดพลาดจาก Server"
+
+            });
+
     }
+
 }
