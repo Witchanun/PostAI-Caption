@@ -1,3 +1,9 @@
+// ==========================================
+// PostAI V2
+// Caption Generator
+// Client-side only
+// ==========================================
+
 import {
     analyzeImage
 } from "./model.js";
@@ -21,25 +27,46 @@ export async function generateCaption(
     }
 
 
-    const productInfo =
+    // ======================================
+    // AI อ่านภาพ
+    // ======================================
+
+    const imageDescription =
         await analyzeImage(
             imageData
         );
 
 
-    if (type === "reels") {
+    if (!imageDescription) {
 
-        return generateReelsCaption(
-            productInfo
+        throw new Error(
+            "AI ไม่สามารถอ่านข้อมูลจากรูปได้"
         );
 
     }
 
 
+    // ======================================
+    // REELS
+    // ======================================
+
+    if (type === "reels") {
+
+        return generateReelsCaption(
+            imageDescription
+        );
+
+    }
+
+
+    // ======================================
+    // FACEBOOK
+    // ======================================
+
     if (type === "facebook") {
 
         return generateFacebookCaption(
-            productInfo
+            imageDescription
         );
 
     }
@@ -53,105 +80,56 @@ export async function generateCaption(
 
 
 // ==========================================
-// REELS
+// REELS CAPTION
 // ==========================================
 
 function generateReelsCaption(
-    product
+    description
 ) {
 
-    return `🎬 REELS CAPTION
+    return `🎬 แคปชัน Reel
 
-🔥 HOOK
+🔥 ใครกำลังมองหาของแบบนี้อยู่ ต้องลองดู 👀
 
-${product.name || "ของชิ้นนี้"} ใครกำลังหาอะไรแบบนี้อยู่ ลองดูอันนี้ก่อน 👀
+จากภาพนี้เป็นสินค้าที่ดูน่าสนใจและเหมาะกับการใช้งานในชีวิตประจำวัน
 
+📝 ข้อมูลที่ AI มองเห็นจากภาพ
 
-💡 เนื้อหา
+${description}
 
-${product.description || "ดูรายละเอียดจากภาพสินค้า"}
+✨ เหมาะกับคนที่กำลังมองหาของใช้ที่ช่วยให้ชีวิตสะดวกขึ้น
 
+🛒 สนใจลองกดดูรายละเอียดสินค้าได้เลย 👇
 
-✨ จุดเด่น
+[ใส่ Affiliate Link ตรงนี้]
 
-${formatFeatures(
-        product.features
-    )}
-
-
-🛒 CTA
-
-ใครสนใจลองกดเข้าไปดูรายละเอียดสินค้าก่อนได้เลย 👇
-
-${product.url || "[ใส่ Affiliate Link ตรงนี้]"}
-
-
-หมายเหตุ:
-แคปชันนี้สร้างจากข้อมูลที่มองเห็นในภาพสินค้า
-`;
+#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #Shopee`;
 }
 
 
 // ==========================================
-// FACEBOOK
+// FACEBOOK CAPTION
 // ==========================================
 
 function generateFacebookCaption(
-    product
+    description
 ) {
 
     return `[ใส่ Affiliate Link ตรงนี้]
 
+🔥 เจอของน่าใช้มาอีกแล้ว 👀
 
-🔥 ${product.name || "เจอของน่าใช้มาอีกแล้ว"}
+ใครกำลังมองหาของแบบนี้ ลองดูรายละเอียดก่อนตัดสินใจนะ
 
-${product.description || ""}
+📝 ข้อมูลจากภาพสินค้า
 
+${description}
 
-✨ จุดเด่น
+✨ ดูแล้วเป็นอีกชิ้นที่น่าสนใจสำหรับคนที่อยากได้ของใช้ดี ๆ มาเพิ่มความสะดวกในชีวิตประจำวัน
 
-${formatFeatures(
-        product.features
-    )}
+🛍️ ใครสนใจ กดเข้าไปดูรายละเอียดสินค้าได้เลย 👇
 
+[ใส่ Affiliate Link ตรงนี้]
 
-💰 ราคา
-
-${product.price || "ไม่พบราคาในภาพ"}
-
-
-🛍️ ใครกำลังมองหาของแบบนี้ ลองกดเข้าไปดูรายละเอียดก่อนได้เลย 👇
-
-${product.url || "[ใส่ Affiliate Link ตรงนี้]"}
-
-
-#ของใช้ในบ้าน #ของน่าใช้ #ป้ายยา
-`;
-}
-
-
-// ==========================================
-// FEATURES
-// ==========================================
-
-function formatFeatures(
-    features
-) {
-
-    if (
-        !Array.isArray(features) ||
-        features.length === 0
-    ) {
-
-        return "✨ ดูรายละเอียดจากภาพสินค้า";
-
-    }
-
-    return features
-        .map(
-            feature =>
-                `✨ ${feature}`
-        )
-        .join("\n");
-
+#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #Shopee`;
 }

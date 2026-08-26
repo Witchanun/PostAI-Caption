@@ -1,7 +1,6 @@
 // ==========================================
 // PostAI V2
-// AI Vision Model
-// Client-side only
+// Client-side Vision AI
 // ==========================================
 
 import {
@@ -15,10 +14,9 @@ import {
 // ==========================================
 
 const MODEL_NAME =
-    "HuggingFaceTB/SmolVLM-256M-Instruct";
+    "Salesforce/blip-image-captioning-base";
 
 
-// ไม่ใช้ Hugging Face server-side API
 env.allowLocalModels = false;
 env.allowRemoteModels = true;
 
@@ -41,27 +39,21 @@ export async function loadVisionModel(
 ) {
 
     if (visionPipeline) {
+
         return visionPipeline;
+
     }
 
 
     if (loadingPromise) {
+
         return loadingPromise;
+
     }
 
 
     loadingPromise =
-        pipeline(
-            "image-text-to-text",
-            MODEL_NAME,
-            {
-                device:
-                    "webgpu",
-
-                dtype:
-                    "q4"
-            }
-        );
+        createPipeline("webgpu");
 
 
     try {
@@ -71,7 +63,9 @@ export async function loadVisionModel(
 
 
         if (onProgress) {
+
             onProgress(100);
+
         }
 
 
@@ -81,51 +75,21 @@ export async function loadVisionModel(
 
     catch (error) {
 
-        console.error(
-            "Vision model loading error:",
+        console.warn(
+            "WebGPU ใช้งานไม่ได้ กำลังเปลี่ยนเป็น WASM",
             error
         );
 
 
-        // ==================================
-        // FALLBACK
-        // ==================================
-
-        try {
-
-            loadingPromise =
-                pipeline(
-                    "image-text-to-text",
-                    MODEL_NAME,
-                    {
-                        device:
-                            "wasm",
-
-                        dtype:
-                            "q8"
-                    }
-                );
+        loadingPromise =
+            createPipeline("wasm");
 
 
-            visionPipeline =
-                await loadingPromise;
+        visionPipeline =
+            await loadingPromise;
 
 
-            return visionPipeline;
-
-        }
-
-        catch (fallbackError) {
-
-            console.error(
-                "Vision fallback error:",
-                fallbackError
-            );
-
-
-            throw fallbackError;
-
-        }
+        return visionPipeline;
 
     }
 
@@ -140,12 +104,37 @@ export async function loadVisionModel(
 
 
 // ==========================================
+// CREATE PIPELINE
+// ==========================================
+
+async function createPipeline(
+    device
+) {
+
+    return await pipeline(
+        "image-to-text",
+        MODEL_NAME,
+        {
+
+            device,
+
+            dtype:
+                device === "webgpu"
+                    ? "q4"
+                    : "q8"
+
+        }
+    );
+
+}
+
+
+// ==========================================
 // ANALYZE IMAGE
 // ==========================================
 
 export async function analyzeImage(
-    imageSource,
-    prompt
+    imageSource
 ) {
 
     const model =
@@ -156,19 +145,73 @@ export async function analyzeImage(
         await model(
             imageSource,
             {
-                text:
-                    prompt,
 
                 max_new_tokens:
-                    300,
+                    150,
 
                 do_sample:
                     false
+
             }
         );
 
 
-    return result;
+    return normalizeResult(
+        result
+    );
+
+}
+
+
+// ==========================================
+// NORMALIZE RESULT
+// ==========================================
+
+function normalizeResult(
+    result
+) {
+
+    if (!result) {
+
+        return "";
+
+    }
+
+
+    if (
+        Array.isArray(result)
+    ) {
+
+        return result
+            .map(
+                item =>
+                    item?.generated_text ||
+                    item?.text ||
+                    ""
+            )
+            .filter(Boolean)
+            .join("\n");
+
+    }
+
+
+    if (
+        typeof result ===
+        "object"
+    ) {
+
+        return (
+            result.generated_text ||
+            result.text ||
+            ""
+        );
+
+    }
+
+
+    return String(
+        result
+    );
 
 }
 
