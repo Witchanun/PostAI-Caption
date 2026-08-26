@@ -1,5 +1,10 @@
+// ==========================================
+// PostAI
+// Main Script
+// ==========================================
+
 import {
-    generateCaptions
+    generateCaption
 } from "./ai/caption.js";
 
 
@@ -37,9 +42,14 @@ const actionsSection =
         "actionsSection"
     );
 
-const generateBtn =
+const reelsBtn =
     document.getElementById(
-        "generateBtn"
+        "reelsBtn"
+    );
+
+const facebookBtn =
+    document.getElementById(
+        "facebookBtn"
     );
 
 const loadingSection =
@@ -52,24 +62,14 @@ const resultSection =
         "resultSection"
     );
 
-const reelsResult =
+const resultText =
     document.getElementById(
-        "reelsResult"
+        "resultText"
     );
 
-const facebookResult =
+const copyBtn =
     document.getElementById(
-        "facebookResult"
-    );
-
-const copyReelsBtn =
-    document.getElementById(
-        "copyReelsBtn"
-    );
-
-const copyFacebookBtn =
-    document.getElementById(
-        "copyFacebookBtn"
+        "copyBtn"
     );
 
 
@@ -77,32 +77,42 @@ const copyFacebookBtn =
 // STATE
 // ==========================================
 
-let selectedFile = null;
+let selectedFile =
+    null;
 
-let imageData = null;
+let imageData =
+    null;
 
 
 // ==========================================
 // FILE SELECT
 // ==========================================
 
-imageInput.addEventListener(
-    "change",
-    event => {
+if (imageInput) {
 
-        const file =
-            event.target.files?.[0];
+    imageInput.addEventListener(
+        "change",
+        event => {
 
-        if (!file) {
+            const file =
+                event.target.files?.[0];
 
-            return;
+
+            if (!file) {
+
+                return;
+
+            }
+
+
+            loadImage(
+                file
+            );
 
         }
+    );
 
-        loadImage(file);
-
-    }
-);
+}
 
 
 // ==========================================
@@ -116,20 +126,24 @@ document.addEventListener(
         const clipboardData =
             event.clipboardData;
 
+
         if (!clipboardData) {
 
             return;
 
         }
 
+
         const items =
             clipboardData.items;
+
 
         if (!items) {
 
             return;
 
         }
+
 
         for (
             const item of items
@@ -145,15 +159,21 @@ document.addEventListener(
                 const file =
                     item.getAsFile();
 
+
                 if (!file) {
 
                     return;
 
                 }
 
-                loadImage(file);
+
+                loadImage(
+                    file
+                );
+
 
                 event.preventDefault();
+
 
                 return;
 
@@ -169,63 +189,83 @@ document.addEventListener(
 // DRAG OVER
 // ==========================================
 
-dropZone.addEventListener(
-    "dragover",
-    event => {
+if (dropZone) {
 
-        event.preventDefault();
+    dropZone.addEventListener(
+        "dragover",
+        event => {
 
-        dropZone.classList.add(
-            "dragover"
-        );
+            event.preventDefault();
 
-    }
-);
+
+            dropZone.classList.add(
+                "dragover"
+            );
+
+        }
+    );
+
+}
 
 
 // ==========================================
 // DRAG LEAVE
 // ==========================================
 
-dropZone.addEventListener(
-    "dragleave",
-    () => {
+if (dropZone) {
 
-        dropZone.classList.remove(
-            "dragover"
-        );
+    dropZone.addEventListener(
+        "dragleave",
+        () => {
 
-    }
-);
+            dropZone.classList.remove(
+                "dragover"
+            );
+
+        }
+    );
+
+}
 
 
 // ==========================================
 // DROP
 // ==========================================
 
-dropZone.addEventListener(
-    "drop",
-    event => {
+if (dropZone) {
 
-        event.preventDefault();
+    dropZone.addEventListener(
+        "drop",
+        event => {
 
-        dropZone.classList.remove(
-            "dragover"
-        );
+            event.preventDefault();
 
-        const file =
-            event.dataTransfer.files?.[0];
 
-        if (!file) {
+            dropZone.classList.remove(
+                "dragover"
+            );
 
-            return;
+
+            const file =
+                event.dataTransfer
+                    ?.files?.[0];
+
+
+            if (!file) {
+
+                return;
+
+            }
+
+
+            loadImage(
+                file
+            );
 
         }
+    );
 
-        loadImage(file);
-
-    }
-);
+}
 
 
 // ==========================================
@@ -250,11 +290,14 @@ function loadImage(
 
     }
 
+
     selectedFile =
         file;
 
+
     const reader =
         new FileReader();
+
 
     reader.onload =
         event => {
@@ -262,35 +305,64 @@ function loadImage(
             imageData =
                 event.target.result;
 
-            previewImage.src =
-                imageData;
 
-            previewSection.classList.remove(
-                "hidden"
-            );
+            if (previewImage) {
 
-            actionsSection.classList.remove(
-                "hidden"
-            );
+                previewImage.src =
+                    imageData;
 
-            resultSection.classList.add(
-                "hidden"
-            );
+            }
 
-            reelsResult.value =
-                "";
 
-            facebookResult.value =
-                "";
+            if (previewSection) {
 
-            previewSection.scrollIntoView({
-                behavior:
-                    "smooth",
-                block:
-                    "center"
-            });
+                previewSection.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+
+            if (actionsSection) {
+
+                actionsSection.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+
+            if (resultSection) {
+
+                resultSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (resultText) {
+
+                resultText.value =
+                    "";
+
+            }
+
+
+            if (previewSection) {
+
+                previewSection.scrollIntoView({
+                    behavior:
+                        "smooth",
+
+                    block:
+                        "center"
+                });
+
+            }
 
         };
+
 
     reader.onerror =
         () => {
@@ -300,6 +372,7 @@ function loadImage(
             );
 
         };
+
 
     reader.readAsDataURL(
         file
@@ -312,60 +385,122 @@ function loadImage(
 // REMOVE IMAGE
 // ==========================================
 
-removeImageBtn.addEventListener(
-    "click",
-    () => {
+if (removeImageBtn) {
 
-        selectedFile =
-            null;
+    removeImageBtn.addEventListener(
+        "click",
+        () => {
 
-        imageData =
-            null;
+            selectedFile =
+                null;
 
-        imageInput.value =
-            "";
 
-        previewImage.src =
-            "";
+            imageData =
+                null;
 
-        previewSection.classList.add(
-            "hidden"
-        );
 
-        actionsSection.classList.add(
-            "hidden"
-        );
+            if (imageInput) {
 
-        resultSection.classList.add(
-            "hidden"
-        );
+                imageInput.value =
+                    "";
 
-        reelsResult.value =
-            "";
+            }
 
-        facebookResult.value =
-            "";
 
-    }
-);
+            if (previewImage) {
+
+                previewImage.src =
+                    "";
+
+            }
+
+
+            if (previewSection) {
+
+                previewSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (actionsSection) {
+
+                actionsSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (resultSection) {
+
+                resultSection.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            if (resultText) {
+
+                resultText.value =
+                    "";
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// REELS BUTTON
+// ==========================================
+//
+// Generate ทั้ง Reel + Facebook
+// ในการกดครั้งเดียว
+//
+
+if (reelsBtn) {
+
+    reelsBtn.addEventListener(
+        "click",
+        () => {
+
+            generate();
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// FACEBOOK BUTTON
+// ==========================================
+//
+// Generate ทั้ง Reel + Facebook
+// ในการกดครั้งเดียว
+//
+
+if (facebookBtn) {
+
+    facebookBtn.addEventListener(
+        "click",
+        () => {
+
+            generate();
+
+        }
+    );
+
+}
 
 
 // ==========================================
 // GENERATE
-// ==========================================
-
-generateBtn.addEventListener(
-    "click",
-    () => {
-
-        generate();
-
-    }
-);
-
-
-// ==========================================
-// GENERATE BOTH
 // ==========================================
 
 async function generate() {
@@ -380,41 +515,89 @@ async function generate() {
 
     }
 
-    setLoading(true);
+
+    setLoading(
+        true
+    );
+
 
     try {
 
         const result =
-            await generateCaptions(
+            await generateCaption(
                 imageData
             );
 
-        reelsResult.value =
-            result.reels;
 
-        facebookResult.value =
-            result.facebook;
+        // ==================================
+        // RESULT
+        // ==================================
 
-        resultSection.classList.remove(
-            "hidden"
-        );
+        const reels =
+            result?.reels ||
+            "ไม่สามารถสร้างแคปชัน Reel ได้";
 
-        resultSection.scrollIntoView({
-            behavior:
-                "smooth"
-        });
+
+        const facebook =
+            result?.facebook ||
+            "ไม่สามารถสร้าง Facebook Post ได้";
+
+
+        // ==================================
+        // SHOW BOTH
+        // ==================================
+
+        if (resultText) {
+
+            resultText.value =
+                `🎬 REELS CAPTION
+
+${reels}
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📘 FACEBOOK POST
+
+${facebook}`;
+
+        }
+
+
+        // ==================================
+        // SHOW RESULT
+        // ==================================
+
+        if (resultSection) {
+
+            resultSection.classList.remove(
+                "hidden"
+            );
+
+
+            resultSection.scrollIntoView({
+                behavior:
+                    "smooth",
+
+                block:
+                    "start"
+            });
+
+        }
 
     }
 
     catch (error) {
 
         console.error(
-            "Caption generation error:",
+            "PostAI Generate Error:",
             error
         );
 
+
         alert(
-            error.message ||
+            error?.message ||
             "เกิดข้อผิดพลาดในการสร้างแคปชัน"
         );
 
@@ -422,7 +605,9 @@ async function generate() {
 
     finally {
 
-        setLoading(false);
+        setLoading(
+            false
+        );
 
     }
 
@@ -439,23 +624,57 @@ function setLoading(
 
     if (loading) {
 
-        loadingSection.classList.remove(
-            "hidden"
-        );
+        if (loadingSection) {
 
-        generateBtn.disabled =
-            true;
+            loadingSection.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        if (reelsBtn) {
+
+            reelsBtn.disabled =
+                true;
+
+        }
+
+
+        if (facebookBtn) {
+
+            facebookBtn.disabled =
+                true;
+
+        }
 
     }
 
     else {
 
-        loadingSection.classList.add(
-            "hidden"
-        );
+        if (loadingSection) {
 
-        generateBtn.disabled =
-            false;
+            loadingSection.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (reelsBtn) {
+
+            reelsBtn.disabled =
+                false;
+
+        }
+
+
+        if (facebookBtn) {
+
+            facebookBtn.disabled =
+                false;
+
+        }
 
     }
 
@@ -463,99 +682,72 @@ function setLoading(
 
 
 // ==========================================
-// COPY REELS
+// COPY
 // ==========================================
 
-copyReelsBtn.addEventListener(
-    "click",
-    async () => {
+if (copyBtn) {
 
-        await copyText(
-            reelsResult,
-            copyReelsBtn
-        );
+    copyBtn.addEventListener(
+        "click",
+        async () => {
 
-    }
-);
+            if (
+                !resultText ||
+                !resultText.value
+            ) {
 
+                return;
 
-// ==========================================
-// COPY FACEBOOK
-// ==========================================
-
-copyFacebookBtn.addEventListener(
-    "click",
-    async () => {
-
-        await copyText(
-            facebookResult,
-            copyFacebookBtn
-        );
-
-    }
-);
+            }
 
 
-// ==========================================
-// COPY TEXT
-// ==========================================
+            try {
 
-async function copyText(
-    textarea,
-    button
-) {
+                await navigator.clipboard.writeText(
+                    resultText.value
+                );
 
-    if (!textarea.value) {
 
-        return;
+                const oldText =
+                    copyBtn.textContent;
 
-    }
 
-    const oldText =
-        button.textContent;
+                copyBtn.textContent =
+                    "✅ คัดลอกแล้ว";
 
-    try {
 
-        await navigator.clipboard.writeText(
-            textarea.value
-        );
+                setTimeout(
+                    () => {
 
-        button.textContent =
-            "✅ คัดลอกแล้ว";
+                        copyBtn.textContent =
+                            oldText;
 
-        setTimeout(
-            () => {
+                    },
+                    1500
+                );
 
-                button.textContent =
-                    oldText;
+            }
 
-            },
-            1500
-        );
+            catch (
+            error
+            ) {
 
-    }
+                console.error(
+                    "Copy error:",
+                    error
+                );
 
-    catch {
 
-        textarea.select();
+                resultText.select();
 
-        document.execCommand(
-            "copy"
-        );
 
-        button.textContent =
-            "✅ คัดลอกแล้ว";
+                document.execCommand(
+                    "copy"
+                );
 
-        setTimeout(
-            () => {
+            }
 
-                button.textContent =
-                    oldText;
-
-            },
-            1500
-        );
-
-    }
+        }
+    );
 
 }

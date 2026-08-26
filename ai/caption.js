@@ -9,10 +9,10 @@ import {
 
 
 // ==========================================
-// GENERATE BOTH
+// GENERATE BOTH CAPTIONS
 // ==========================================
 
-export async function generateCaptions(
+export async function generateCaption(
     imageData
 ) {
 
@@ -25,29 +25,17 @@ export async function generateCaptions(
     }
 
 
-    // ======================================
-    // ANALYZE IMAGE
-    // ======================================
-
     const productInfo =
         await analyzeImage(
             imageData
         );
 
 
-    // ======================================
-    // NORMALIZE
-    // ======================================
-
     const product =
-        normalizeProductInfo(
+        normalizeProduct(
             productInfo
         );
 
-
-    // ======================================
-    // RETURN BOTH
-    // ======================================
 
     return {
 
@@ -67,474 +55,57 @@ export async function generateCaptions(
 
 
 // ==========================================
-// NORMALIZE PRODUCT DATA
+// NORMALIZE
 // ==========================================
 
-function normalizeProductInfo(
+function normalizeProduct(
     data
 ) {
 
-    const emptyProduct = {
-
-        type: "",
-        description: "",
-        size: "",
-        quantity: "",
-        features: [],
-        usage: "",
-        extra: ""
-
-    };
-
-
-    if (!data) {
-
-        return emptyProduct;
-
-    }
-
-
-    // ======================================
-    // STRING
-    // ======================================
-
-    if (
-        typeof data === "string"
-    ) {
-
-        return parseText(
-            data
-        );
-
-    }
-
-
-    // ======================================
-    // ARRAY
-    // ======================================
-
-    if (
-        Array.isArray(data)
-    ) {
-
-        const text =
-            data
-                .map(
-                    item =>
-                        item?.generated_text ||
-                        item?.text ||
-                        ""
-                )
-                .filter(Boolean)
-                .join(" ")
-                .trim();
-
-        return parseText(
-            text
-        );
-
-    }
-
-
-    // ======================================
-    // OBJECT
-    // ======================================
-
     return {
 
         type:
-            cleanText(
-                data.type ||
-                data.product_type ||
-                data.category ||
-                ""
+            clean(
+                data?.type
             ),
 
         description:
-            cleanText(
-                data.description ||
-                data.generated_text ||
-                data.text ||
-                ""
+            clean(
+                data?.description
             ),
 
         size:
-            cleanText(
-                data.size ||
-                data.volume ||
-                data.capacity ||
-                ""
+            clean(
+                data?.size
             ),
 
         quantity:
-            cleanText(
-                data.quantity ||
-                data.amount ||
-                ""
+            clean(
+                data?.quantity
             ),
 
         features:
-            normalizeFeatures(
-                data.features
-            ),
+            Array.isArray(
+                data?.features
+            )
+                ? data.features
+                    .map(
+                        clean
+                    )
+                    .filter(Boolean)
+                : [],
 
         usage:
-            cleanText(
-                data.usage ||
-                data.use ||
-                ""
+            clean(
+                data?.usage
             ),
 
-        extra:
-            cleanText(
-                data.extra ||
-                data.details ||
-                ""
+        suitableFor:
+            clean(
+                data?.suitableFor
             )
 
     };
-
-}
-
-
-// ==========================================
-// PARSE RAW TEXT
-// ==========================================
-
-function parseText(
-    text
-) {
-
-    const clean =
-        cleanText(
-            text
-        );
-
-
-    return {
-
-        type:
-            detectProductType(
-                clean
-            ),
-
-        description:
-            clean,
-
-        size:
-            detectSize(
-                clean
-            ),
-
-        quantity:
-            detectQuantity(
-                clean
-            ),
-
-        features:
-            [],
-
-        usage:
-            "",
-
-        extra:
-            ""
-
-    };
-
-}
-
-
-// ==========================================
-// PRODUCT TYPE
-// ==========================================
-
-function detectProductType(
-    text
-) {
-
-    const lower =
-        text.toLowerCase();
-
-
-    const types = [
-
-        [
-            [
-                "cleansing milk",
-                "คลีนซิ่งมิลค์",
-                "cleansing"
-            ],
-            "คลีนซิ่งมิลค์"
-        ],
-
-        [
-            [
-                "micellar",
-                "ไมเซลล่า"
-            ],
-            "ไมเซลล่า วอเตอร์"
-        ],
-
-        [
-            [
-                "sunscreen",
-                "กันแดด"
-            ],
-            "ครีมกันแดด"
-        ],
-
-        [
-            [
-                "shampoo",
-                "แชมพู"
-            ],
-            "แชมพู"
-        ],
-
-        [
-            [
-                "conditioner",
-                "ครีมนวด"
-            ],
-            "ครีมนวดผม"
-        ],
-
-        [
-            [
-                "face wash",
-                "facial cleanser",
-                "โฟมล้างหน้า",
-                "คลีนเซอร์"
-            ],
-            "โฟมล้างหน้า"
-        ],
-
-        [
-            [
-                "serum",
-                "เซรั่ม"
-            ],
-            "เซรั่ม"
-        ],
-
-        [
-            [
-                "lotion",
-                "โลชั่น"
-            ],
-            "โลชั่น"
-        ],
-
-        [
-            [
-                "cream",
-                "ครีม"
-            ],
-            "ครีมบำรุงผิว"
-        ],
-
-        [
-            [
-                "mop",
-                "ไม้ถูพื้น"
-            ],
-            "ไม้ถูพื้น"
-        ],
-
-        [
-            [
-                "broom",
-                "ไม้กวาด"
-            ],
-            "ไม้กวาด"
-        ],
-
-        [
-            [
-                "storage",
-                "กล่องเก็บของ",
-                "กล่องจัดเก็บ"
-            ],
-            "กล่องจัดเก็บของ"
-        ],
-
-        [
-            [
-                "rack",
-                "shelf",
-                "ชั้นวาง"
-            ],
-            "ชั้นวางของ"
-        ],
-
-        [
-            [
-                "egg cooker",
-                "เครื่องต้มไข่"
-            ],
-            "เครื่องต้มไข่"
-        ],
-
-        [
-            [
-                "vacuum",
-                "เครื่องดูดฝุ่น"
-            ],
-            "เครื่องดูดฝุ่น"
-        ]
-
-    ];
-
-
-    for (
-        const [keywords, result]
-        of types
-    ) {
-
-        for (
-            const keyword
-            of keywords
-        ) {
-
-            if (
-                lower.includes(
-                    keyword
-                )
-            ) {
-
-                return result;
-
-            }
-
-        }
-
-    }
-
-
-    return "ของใช้ชิ้นนี้";
-
-}
-
-
-// ==========================================
-// SIZE
-// ==========================================
-
-function detectSize(
-    text
-) {
-
-    const match =
-        text.match(
-            /(\d+(?:\.\d+)?)\s*(ml|มล|g|กรัม|kg|กก|l|ลิตร)/i
-        );
-
-
-    if (!match) {
-
-        return "";
-
-    }
-
-
-    return match[0];
-
-}
-
-
-// ==========================================
-// QUANTITY
-// ==========================================
-
-function detectQuantity(
-    text
-) {
-
-    const patterns = [
-
-        /แพ็ก\s*(\d+)/i,
-
-        /pack\s*(\d+)/i,
-
-        /(\d+)\s*ชิ้น/i,
-
-        /(\d+)\s*ขวด/i,
-
-        /(\d+)\s*กล่อง/i,
-
-        /(\d+)\s*อัน/i,
-
-        /(\d+)\s*pcs/i
-
-    ];
-
-
-    for (
-        const pattern
-        of patterns
-    ) {
-
-        const match =
-            text.match(
-                pattern
-            );
-
-
-        if (match) {
-
-            if (
-                match[0]
-                    .toLowerCase()
-                    .includes("แพ็ก")
-            ) {
-
-                return match[0];
-
-            }
-
-
-            return `${match[1]} ชิ้น`;
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-// ==========================================
-// FEATURES
-// ==========================================
-
-function normalizeFeatures(
-    features
-) {
-
-    if (
-        !Array.isArray(features)
-    ) {
-
-        return [];
-
-    }
-
-
-    return features
-        .map(
-            feature =>
-                cleanText(
-                    feature
-                )
-        )
-        .filter(Boolean)
-        .slice(
-            0,
-            5
-        );
 
 }
 
@@ -552,27 +123,39 @@ function generateReelsCaption(
         "ของใช้ชิ้นนี้";
 
 
+    const hook =
+        createHook(
+            product
+        );
+
+
     const details =
-        buildProductDetails(
+        createDetails(
             product
         );
 
 
-    const featureText =
-        buildFeatureText(
+    const features =
+        createFeatures(
             product
         );
+
+
+    const audience =
+        product.suitableFor
+            ? `\n\nเหมาะกับ ${product.suitableFor}`
+            : "";
 
 
     return `🔗 [แปะ Affiliate Link ตรงนี้]
 
-👀 อันนี้คนที่กำลังหาอยู่ต้องลองส่อง!
+${hook}
 
-${type} ที่ดูแล้วน่าใช้กว่าที่คิด ✨
+🛍️ ${type}
 
 ${details}
 
-${featureText}
+${features}${audience}
 
 ใครกำลังมองหาของแบบนี้อยู่ ลองกดเข้าไปดูรายละเอียดก่อนได้เลย 👇
 
@@ -593,43 +176,108 @@ function generateFacebookCaption(
         "ของใช้ชิ้นนี้";
 
 
-    const details =
-        buildProductDetails(
+    const hook =
+        createFacebookHook(
             product
         );
 
 
-    const featureText =
-        buildFeatureText(
+    const details =
+        createDetails(
+            product
+        );
+
+
+    const features =
+        createFeatures(
             product
         );
 
 
     return `🔗 [แปะ Affiliate Link ตรงนี้]
 
-✨ ใครกำลังหาของแบบนี้อยู่ ลองดูตัวนี้ก่อน!
+${hook}
 
-🛍️ ${capitalizeFirst(
-        type
-    )}
+🛍️ ${type}
 
 ${details}
 
-${featureText}
+${features}
 
-จุดที่น่าสนใจคือเป็นของที่เอาไปใช้ในชีวิตประจำวันได้จริง เหมาะกับคนที่กำลังมองหาตัวช่วยดี ๆ แบบนี้อยู่ 👀
+${product.usage
+            ? `ใช้สำหรับ${product.usage}`
+            : ""
+        }
 
-ถ้าดูแล้วตรงกับที่กำลังหาอยู่ ลองกดเข้าไปส่องรายละเอียดเพิ่มเติมก่อนได้เลย 👇
+${product.suitableFor
+            ? `\nเหมาะกับ${product.suitableFor}`
+            : ""
+        }
 
-#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #ของดีบอกต่อ`;
+ใครกำลังหาของแบบนี้อยู่ ลองกดเข้าไปส่องรายละเอียดก่อนได้เลย 👇✨
+
+#ของน่าใช้ #ของดีบอกต่อ #ป้ายยา #น่าใช้`;
 }
 
 
 // ==========================================
-// BUILD PRODUCT DETAILS
+// HOOK
 // ==========================================
 
-function buildProductDetails(
+function createHook(
+    product
+) {
+
+    const type =
+        product.type ||
+        "ของชิ้นนี้";
+
+
+    if (
+        product.usage
+    ) {
+
+        return `👀 ใครกำลังหาตัวช่วยเรื่อง${product.usage}อยู่ หยุดเลื่อนก่อน!`;
+
+    }
+
+
+    return `👀 ใครกำลังมองหา${type}อยู่ อันนี้ลองส่องก่อน!`;
+
+}
+
+
+// ==========================================
+// FACEBOOK HOOK
+// ==========================================
+
+function createFacebookHook(
+    product
+) {
+
+    const type =
+        product.type ||
+        "ของใช้";
+
+
+    if (
+        product.suitableFor
+    ) {
+
+        return `✨ ใครกำลังหา${type}อยู่ ลองดูตัวนี้ก่อน`;
+
+    }
+
+
+    return `✨ เจอ${type}ที่น่าสนใจ เลยเอามาป้ายยา`;
+}
+
+
+// ==========================================
+// PRODUCT DETAILS
+// ==========================================
+
+function createDetails(
     product
 ) {
 
@@ -640,34 +288,21 @@ function buildProductDetails(
         product.description
     ) {
 
-        const description =
-            cleanDescription(
-                product.description
-            );
-
-
-        if (
-            description
-        ) {
-
-            parts.push(
-                description
-            );
-
-        }
+        parts.push(
+            product.description
+        );
 
     }
 
 
+    const specs = [];
+
+
     if (
-        product.size &&
-        !containsValue(
-            product.description,
-            product.size
-        )
+        product.size
     ) {
 
-        parts.push(
+        specs.push(
             `ขนาด ${product.size}`
         );
 
@@ -675,14 +310,10 @@ function buildProductDetails(
 
 
     if (
-        product.quantity &&
-        !containsValue(
-            product.description,
-            product.quantity
-        )
+        product.quantity
     ) {
 
-        parts.push(
+        specs.push(
             product.quantity
         );
 
@@ -690,22 +321,13 @@ function buildProductDetails(
 
 
     if (
-        product.usage
+        specs.length
     ) {
 
         parts.push(
-            product.usage
-        );
-
-    }
-
-
-    if (
-        product.extra
-    ) {
-
-        parts.push(
-            product.extra
+            specs.join(
+                " • "
+            )
         );
 
     }
@@ -715,29 +337,28 @@ function buildProductDetails(
         parts.length === 0
     ) {
 
-        return `เป็น${product.type}ที่เหมาะสำหรับใช้ในชีวิตประจำวัน ✨`;
+        return `รายละเอียดที่อ่านได้จากภาพยังไม่เพียงพอ`;
 
     }
 
 
-    return parts
-        .join(" ")
-        .trim();
+    return parts.join(
+        "\n"
+    );
 
 }
 
 
 // ==========================================
-// FEATURES TEXT
+// FEATURES
 // ==========================================
 
-function buildFeatureText(
+function createFeatures(
     product
 ) {
 
     if (
-        !product.features ||
-        product.features.length === 0
+        !product.features.length
     ) {
 
         return "";
@@ -745,7 +366,7 @@ function buildFeatureText(
     }
 
 
-    const features =
+    const items =
         product.features
             .slice(
                 0,
@@ -755,79 +376,21 @@ function buildFeatureText(
                 feature =>
                     `✨ ${feature}`
             )
-            .join("\n");
+            .join(
+                "\n"
+            );
 
 
-    return `จุดที่น่าสนใจ 👇\n${features}`;
-
-}
-
-
-// ==========================================
-// CLEAN DESCRIPTION
-// ==========================================
-
-function cleanDescription(
-    text
-) {
-
-    if (!text) {
-
-        return "";
-
-    }
-
-
-    let result =
-        cleanText(
-            text
-        );
-
-
-    // Remove common AI labels
-
-    result =
-        result.replace(
-            /^(description|product description|รายละเอียดสินค้า|ข้อมูลสินค้า)\s*[:：-]?\s*/i,
-            ""
-        );
-
-
-    // Remove price information
-
-    result =
-        result.replace(
-            /(?:฿|บาท)\s*\d[\d,.]*/gi,
-            ""
-        );
-
-
-    result =
-        result.replace(
-            /\d[\d,.]*\s*(?:บาท|฿)/gi,
-            ""
-        );
-
-
-    // Remove URLs
-
-    result =
-        result.replace(
-            /https?:\/\/\S+/gi,
-            ""
-        );
-
-
-    return result.trim();
+    return `\nจุดที่น่าสนใจ 👇\n${items}`;
 
 }
 
 
 // ==========================================
-// TEXT HELPERS
+// CLEAN
 // ==========================================
 
-function cleanText(
+function clean(
     value
 ) {
 
@@ -841,61 +404,13 @@ function cleanText(
     }
 
 
-    return String(value)
-
+    return String(
+        value
+    )
         .replace(
             /\s+/g,
             " "
         )
-
-        .replace(
-            /^["'`]+|["'`]+$/g,
-            ""
-        )
-
         .trim();
-
-}
-
-
-function containsValue(
-    text,
-    value
-) {
-
-    if (
-        !text ||
-        !value
-    ) {
-
-        return false;
-
-    }
-
-
-    return String(text)
-        .toLowerCase()
-        .includes(
-            String(value)
-                .toLowerCase()
-        );
-
-}
-
-
-function capitalizeFirst(
-    text
-) {
-
-    if (!text) {
-
-        return "";
-
-    }
-
-
-    return text.charAt(0)
-        .toUpperCase() +
-        text.slice(1);
 
 }
