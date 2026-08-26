@@ -2,220 +2,249 @@
 <html lang="th">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>PostAI - AI Caption Generator</title>
+    <title>
+        PostAI - AI Caption Generator
+    </title>
 
-    <link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="./style.css">
 </head>
-
 
 <body>
 
-    <main class="app">
+    <main class="container">
 
-        <!-- HEADER -->
+        <!-- ==================================
+             HEADER
+        =================================== -->
 
-        <header class="header">
+        <header class="hero">
 
-            <div class="logo">
-                PostAI
-            </div>
+            <h1>
+                ✨ PostAI
+            </h1>
 
             <p>
-                แคปรูปสินค้า → วางรูป → ให้ AI คิดแคปชัน
+                วางรูปสินค้า แล้วให้ AI ช่วยคิดแคปชันให้
             </p>
+
+            <span>
+                🎬 Reel + 📘 Facebook Post ในครั้งเดียว
+            </span>
 
         </header>
 
 
-        <!-- UPLOAD -->
+        <!-- ==================================
+             UPLOAD
+        =================================== -->
 
-        <section class="upload-section">
+        <section id="dropZone" class="drop-zone">
 
-            <div id="dropZone" class="drop-zone">
+            <div class="upload-icon">
+                📸
+            </div>
 
-                <div class="upload-icon">
-                    📋
-                </div>
+            <h2>
+                ใส่รูปสินค้า
+            </h2>
+
+            <p>
+                กด Ctrl + V เพื่อวางรูปได้เลย
+            </p>
+
+            <p class="upload-or">
+                หรือ
+            </p>
+
+            <label class="upload-button" for="imageInput">
+                📁 เลือกรูปจากเครื่อง
+            </label>
+
+            <input id="imageInput" type="file" accept="image/*" hidden>
+
+            <small>
+                รองรับ JPG, PNG, WEBP
+            </small>
+
+        </section>
+
+
+        <!-- ==================================
+             PREVIEW
+        =================================== -->
+
+        <section id="previewSection" class="preview-section hidden">
+
+            <div class="section-title">
 
                 <h2>
-                    วางรูปสินค้าได้เลย
+                    👀 รูปสินค้าของคุณ
                 </h2>
 
-                <p>
-                    กด Ctrl + V เพื่อวางรูปจาก Clipboard
-                </p>
-
-                <div class="paste-guide">
-
-                    📸 แคปหน้าจอ
-                    →
-                    Ctrl + C
-                    →
-                    กลับมาที่นี่
-                    →
-                    Ctrl + V
-
-                </div>
-
-
-                <div class="or-text">
-                    หรือ
-                </div>
-
-
-                <label class="upload-button">
-
-                    เลือกรูปจากเครื่อง
-
-                    <input id="imageInput" type="file" accept="image/*" hidden>
-
-                </label>
-
-
-                <small>
-                    รูปจะถูกอ่านจากเครื่องของคุณ
-                </small>
+                <button id="removeImageBtn" class="remove-button" type="button">
+                    🗑️ ลบรูป
+                </button>
 
             </div>
 
+            <div class="preview-wrapper">
 
-            <!-- PREVIEW -->
-
-            <div id="previewSection" class="preview-section hidden">
-
-                <div class="preview-header">
-
-                    <h3>
-                        🖼️ รูปสินค้า
-                    </h3>
-
-                    <button id="removeImageBtn" class="secondary-button" type="button">
-                        ลบรูป
-                    </button>
-
-                </div>
-
-
-                <div class="image-wrapper">
-
-                    <img id="previewImage" alt="ตัวอย่างรูปสินค้า">
-
-                </div>
+                <img id="previewImage" class="preview-image" src="" alt="รูปสินค้าที่เลือก">
 
             </div>
 
         </section>
 
 
-        <!-- ACTIONS -->
+        <!-- ==================================
+             ACTION
+        =================================== -->
 
         <section id="actionsSection" class="actions-section hidden">
 
-            <button id="reelsBtn" class="generate-button" type="button">
-
-                🎬
-                <span>
-                    เจนแคปชัน Reel
-                </span>
-
+            <button id="generateBtn" class="generate-btn" type="button">
+                ✨ เจนแคปชัน
             </button>
-
-
-            <button id="facebookBtn" class="generate-button" type="button">
-
-                📱
-                <span>
-                    เจนแคปชันโพสต์
-                </span>
-
-            </button>
-
-        </section>
-
-
-        <!-- LOADING -->
-
-        <section id="loadingSection" class="loading hidden">
-
-            <div class="spinner"></div>
 
             <p>
-                AI กำลังอ่านข้อมูลจากรูป...
+                กดครั้งเดียว ได้ทั้ง Reel และ Facebook Post
             </p>
 
         </section>
 
 
-        <!-- RESULT -->
+        <!-- ==================================
+             LOADING
+        =================================== -->
+
+        <section id="loadingSection" class="loading-section hidden">
+
+            <div class="loading-spinner"></div>
+
+            <h3>
+                🤖 กำลังดูรูป...
+            </h3>
+
+            <p>
+                AI กำลังอ่านข้อมูลสินค้าและคิดแคปชันให้
+            </p>
+
+            <small>
+                เดี๋ยวจัดให้ทั้ง Reel และ Facebook Post เลย ✨
+            </small>
+
+        </section>
+
+
+        <!-- ==================================
+             RESULT
+        =================================== -->
 
         <section id="resultSection" class="result-section hidden">
 
-            <div class="result-header">
+            <div class="result-header-main">
 
                 <h2>
-                    ✨ ผลลัพธ์
+                    🎉 แคปชันพร้อมใช้
                 </h2>
 
-                <button id="copyBtn" class="secondary-button" type="button">
-                    📋 คัดลอก
-                </button>
+                <p>
+                    เจนครั้งเดียว ได้ครบ 2 แบบ
+                </p>
 
             </div>
 
 
-            <textarea id="resultText" readonly placeholder="แคปชันจะแสดงตรงนี้"></textarea>
+            <!-- ==============================
+                 REELS
+            =============================== -->
+
+            <article class="result-card">
+
+                <div class="result-card-header">
+
+                    <div>
+
+                        <span class="result-icon">
+                            🎬
+                        </span>
+
+                        <h3>
+                            Reel Caption
+                        </h3>
+
+                    </div>
+
+                    <button id="copyReelsBtn" class="copy-button" type="button">
+                        📋 คัดลอก
+                    </button>
+
+                </div>
+
+                <textarea id="reelsResult" class="result-text" readonly
+                    placeholder="แคปชัน Reel จะปรากฏตรงนี้..."></textarea>
+
+            </article>
+
+
+            <!-- ==============================
+                 FACEBOOK
+            =============================== -->
+
+            <article class="result-card">
+
+                <div class="result-card-header">
+
+                    <div>
+
+                        <span class="result-icon">
+                            📘
+                        </span>
+
+                        <h3>
+                            Facebook Post
+                        </h3>
+
+                    </div>
+
+                    <button id="copyFacebookBtn" class="copy-button" type="button">
+                        📋 คัดลอก
+                    </button>
+
+                </div>
+
+                <textarea id="facebookResult" class="result-text" readonly
+                    placeholder="แคปชัน Facebook จะปรากฏตรงนี้..."></textarea>
+
+            </article>
 
         </section>
 
 
-        <!-- INFO -->
+        <!-- ==================================
+             FOOTER
+        =================================== -->
 
-        <section class="info-section">
+        <footer>
 
-            <h3>
-                💡 วิธีใช้
-            </h3>
+            <p>
+                PostAI • Client-side AI
+            </p>
 
-            <ol>
-
-                <li>
-                    เข้า Shopee
-                </li>
-
-                <li>
-                    แคปหน้าจอสินค้าที่ต้องการ
-                </li>
-
-                <li>
-                    กลับมาที่ PostAI
-                </li>
-
-                <li>
-                    กด Ctrl + V
-                </li>
-
-                <li>
-                    เลือก Reel หรือโพสต์
-                </li>
-
-                <li>
-                    AI อ่านข้อมูลจากภาพแล้วสร้างแคปชัน
-                </li>
-
-            </ol>
-
-        </section>
+        </footer>
 
     </main>
 
 
-    <script type="module" src="script.js"></script>
+    <!-- ==================================
+         SCRIPT
+    =================================== -->
+
+    <script type="module" src="./script.js"></script>
 
 </body>
 

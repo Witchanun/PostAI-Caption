@@ -1,7 +1,6 @@
 // ==========================================
 // PostAI
-// Caption Generator
-// Client-side
+// Natural Caption Generator
 // ==========================================
 
 import {
@@ -10,12 +9,11 @@ import {
 
 
 // ==========================================
-// GENERATE CAPTION
+// GENERATE BOTH
 // ==========================================
 
-export async function generateCaption(
-    imageData,
-    type
+export async function generateCaptions(
+    imageData
 ) {
 
     if (!imageData) {
@@ -26,94 +24,328 @@ export async function generateCaption(
 
     }
 
-    // OCR อ่านข้อความจากภาพ
-    const text =
+    // ======================================
+    // ANALYZE IMAGE
+    // ======================================
+
+    const productInfo =
         await analyzeImage(
             imageData
         );
 
-    if (!text) {
 
-        throw new Error(
-            "ไม่สามารถอ่านข้อความจากภาพได้"
+    // ======================================
+    // NORMALIZE DATA
+    // ======================================
+
+    const product =
+        normalizeProductInfo(
+            productInfo
         );
 
-    }
 
-    if (type === "reels") {
+    // ======================================
+    // GENERATE BOTH
+    // ======================================
 
-        return generateReelsCaption(
-            text
-        );
+    return {
 
-    }
+        reels:
+            generateReelsCaption(
+                product
+            ),
 
-    if (type === "facebook") {
+        facebook:
+            generateFacebookCaption(
+                product
+            )
 
-        return generateFacebookCaption(
-            text
-        );
-
-    }
-
-    throw new Error(
-        "ไม่รู้จักประเภทแคปชัน"
-    );
+    };
 
 }
 
 
 // ==========================================
-// REELS
+// NORMALIZE PRODUCT INFO
+// ==========================================
+
+function normalizeProductInfo(
+    data
+) {
+
+    if (!data) {
+
+        return {
+
+            name: "",
+            description: "",
+            price: "",
+            features: []
+
+        };
+
+    }
+
+
+    // --------------------------------------
+    // STRING RESULT
+    // --------------------------------------
+
+    if (
+        typeof data === "string"
+    ) {
+
+        return {
+
+            name: data.trim(),
+            description: data.trim(),
+            price: "",
+            features: []
+
+        };
+
+    }
+
+
+    // --------------------------------------
+    // ARRAY RESULT
+    // --------------------------------------
+
+    if (
+        Array.isArray(data)
+    ) {
+
+        const text =
+            data
+                .map(
+                    item =>
+                        item?.generated_text ||
+                        item?.text ||
+                        ""
+                )
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+
+        return {
+
+            name: text,
+            description: text,
+            price: "",
+            features: []
+
+        };
+
+    }
+
+
+    // --------------------------------------
+    // OBJECT RESULT
+    // --------------------------------------
+
+    return {
+
+        name:
+            data.name ||
+            data.title ||
+            data.product_name ||
+            data.generated_text ||
+            data.text ||
+            "",
+
+        description:
+            data.description ||
+            data.generated_text ||
+            data.text ||
+            "",
+
+        price:
+            data.price ||
+            "",
+
+        features:
+            Array.isArray(
+                data.features
+            )
+                ? data.features
+                : []
+
+    };
+
+}
+
+
+// ==========================================
+// REELS CAPTION
 // ==========================================
 
 function generateReelsCaption(
-    text
+    product
 ) {
 
-    return `🎬 แคปชัน Reel
+    const productName =
+        product.name ||
+        "ของชิ้นนี้";
 
-🔥 ของชิ้นนี้น่าสนใจมาก 👀
 
-ใครกำลังมองหาของใช้แบบนี้ ลองดูก่อนเลย
+    const description =
+        makeNaturalDescription(
+            product
+        );
 
-📝 ข้อมูลที่อ่านได้จากภาพ
 
-${text}
+    return `🔥 เห็นแล้วแบบ… เออ อันนี้น่าใช้
 
-✨ เหมาะกับคนที่กำลังมองหาของใช้ที่ช่วยเพิ่มความสะดวกในชีวิตประจำวัน
+ใครกำลังหาของแบบนี้อยู่ ขอป้ายยาตัวนี้ไว้ก่อนเลย 👀
 
-🛒 สนใจลองดูรายละเอียดสินค้าได้เลย 👇
+${description}
+
+เป็นของที่ดูแล้วรู้สึกว่า
+“มีไว้ก็น่าจะได้ใช้บ่อยกว่าที่คิด” 😂
+
+ใครสนใจลองส่องรายละเอียดดูก่อนได้เลย
+เผื่อเจอของที่กำลังหาอยู่ 👇
 
 [ใส่ Affiliate Link ตรงนี้]
 
-#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #Shopee`;
+#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #ของดีบอกต่อ`;
 }
 
 
 // ==========================================
-// FACEBOOK
+// FACEBOOK CAPTION
 // ==========================================
 
 function generateFacebookCaption(
-    text
+    product
 ) {
+
+    const description =
+        makeNaturalDescription(
+            product
+        );
+
+
+    const priceText =
+        product.price
+            ? `\n\n💸 ${product.price}`
+            : "";
+
 
     return `[ใส่ Affiliate Link ตรงนี้]
 
-🔥 เจอของน่าใช้มาอีกแล้ว 👀
+👀 เจอของน่าใช้มาอีกแล้ว
 
-ใครกำลังมองหาของแบบนี้ ลองดูรายละเอียดก่อนนะ
+${description}${priceText}
 
-📝 ข้อมูลจากภาพสินค้า
+ชอบตรงที่เป็นของที่ดูแล้วเอาไปใช้ในชีวิตประจำวันได้จริง
+ใครกำลังมองหาของประมาณนี้ ลองเข้าไปดูรายละเอียดก่อนก็ได้
 
-${text}
+บางทีของที่ดูเหมือนธรรมดา
+แต่พอมีติดบ้านไว้แล้วมันสะดวกขึ้นเยอะเลย 😂
 
-✨ ใครกำลังหาของใช้ที่ช่วยให้ชีวิตสะดวกขึ้น ลองกดเข้าไปดูรายละเอียดได้เลย
-
-🛍️ สนใจดูสินค้า 👇
+👇 ใครสนใจกดเข้าไปส่องได้เลย
 
 [ใส่ Affiliate Link ตรงนี้]
 
-#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #Shopee`;
+#ของน่าใช้ #ของใช้ในบ้าน #ป้ายยา #ของดีบอกต่อ`;
+}
+
+
+// ==========================================
+// NATURAL DESCRIPTION
+// ==========================================
+
+function makeNaturalDescription(
+    product
+) {
+
+    const name =
+        cleanText(
+            product.name
+        );
+
+
+    const description =
+        cleanText(
+            product.description
+        );
+
+
+    // --------------------------------------
+    // HAVE NAME + DESCRIPTION
+    // --------------------------------------
+
+    if (
+        name &&
+        description &&
+        description !== name
+    ) {
+
+        return `${name} 👀
+
+จากที่เห็นในรูป จุดที่น่าสนใจคือ ${description}`;
+
+    }
+
+
+    // --------------------------------------
+    // HAVE NAME
+    // --------------------------------------
+
+    if (name) {
+
+        return `ตัวนี้คือ ${name} 👀`;
+
+    }
+
+
+    // --------------------------------------
+    // HAVE DESCRIPTION
+    // --------------------------------------
+
+    if (description) {
+
+        return `จากรูปแล้วตัวนี้ดูน่าสนใจตรงที่ ${description} 👀`;
+
+    }
+
+
+    // --------------------------------------
+    // NOTHING
+    // --------------------------------------
+
+    return "ตัวนี้เห็นแล้วรู้สึกว่าน่าเอามาลองใช้ดูเลย 👀";
+
+}
+
+
+// ==========================================
+// CLEAN TEXT
+// ==========================================
+
+function cleanText(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .replace(
+            /^["'`]+|["'`]+$/g,
+            ""
+        )
+        .trim();
+
 }

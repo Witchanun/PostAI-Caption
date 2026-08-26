@@ -1,5 +1,5 @@
 import {
-    generateCaption
+    generateCaptions
 } from "./ai/caption.js";
 
 
@@ -37,14 +37,9 @@ const actionsSection =
         "actionsSection"
     );
 
-const reelsBtn =
+const generateBtn =
     document.getElementById(
-        "reelsBtn"
-    );
-
-const facebookBtn =
-    document.getElementById(
-        "facebookBtn"
+        "generateBtn"
     );
 
 const loadingSection =
@@ -57,14 +52,24 @@ const resultSection =
         "resultSection"
     );
 
-const resultText =
+const reelsResult =
     document.getElementById(
-        "resultText"
+        "reelsResult"
     );
 
-const copyBtn =
+const facebookResult =
     document.getElementById(
-        "copyBtn"
+        "facebookResult"
+    );
+
+const copyReelsBtn =
+    document.getElementById(
+        "copyReelsBtn"
+    );
+
+const copyFacebookBtn =
+    document.getElementById(
+        "copyFacebookBtn"
     );
 
 
@@ -117,17 +122,14 @@ document.addEventListener(
 
         }
 
-
         const items =
             clipboardData.items;
-
 
         if (!items) {
 
             return;
 
         }
-
 
         for (
             const item of items
@@ -143,19 +145,15 @@ document.addEventListener(
                 const file =
                     item.getAsFile();
 
-
                 if (!file) {
 
                     return;
 
                 }
 
-
                 loadImage(file);
 
-
                 event.preventDefault();
-
 
                 return;
 
@@ -215,17 +213,14 @@ dropZone.addEventListener(
             "dragover"
         );
 
-
         const file =
             event.dataTransfer.files?.[0];
-
 
         if (!file) {
 
             return;
 
         }
-
 
         loadImage(file);
 
@@ -255,14 +250,11 @@ function loadImage(
 
     }
 
-
     selectedFile =
         file;
 
-
     const reader =
         new FileReader();
-
 
     reader.onload =
         event => {
@@ -270,29 +262,26 @@ function loadImage(
             imageData =
                 event.target.result;
 
-
             previewImage.src =
                 imageData;
-
 
             previewSection.classList.remove(
                 "hidden"
             );
 
-
             actionsSection.classList.remove(
                 "hidden"
             );
-
 
             resultSection.classList.add(
                 "hidden"
             );
 
-
-            resultText.value =
+            reelsResult.value =
                 "";
 
+            facebookResult.value =
+                "";
 
             previewSection.scrollIntoView({
                 behavior:
@@ -303,7 +292,6 @@ function loadImage(
 
         };
 
-
     reader.onerror =
         () => {
 
@@ -312,7 +300,6 @@ function loadImage(
             );
 
         };
-
 
     reader.readAsDataURL(
         file
@@ -332,68 +319,32 @@ removeImageBtn.addEventListener(
         selectedFile =
             null;
 
-
         imageData =
             null;
-
 
         imageInput.value =
             "";
 
-
         previewImage.src =
             "";
-
 
         previewSection.classList.add(
             "hidden"
         );
 
-
         actionsSection.classList.add(
             "hidden"
         );
-
 
         resultSection.classList.add(
             "hidden"
         );
 
-
-        resultText.value =
+        reelsResult.value =
             "";
 
-    }
-);
-
-
-// ==========================================
-// REELS
-// ==========================================
-
-reelsBtn.addEventListener(
-    "click",
-    () => {
-
-        generate(
-            "reels"
-        );
-
-    }
-);
-
-
-// ==========================================
-// FACEBOOK
-// ==========================================
-
-facebookBtn.addEventListener(
-    "click",
-    () => {
-
-        generate(
-            "facebook"
-        );
+        facebookResult.value =
+            "";
 
     }
 );
@@ -403,9 +354,21 @@ facebookBtn.addEventListener(
 // GENERATE
 // ==========================================
 
-async function generate(
-    type
-) {
+generateBtn.addEventListener(
+    "click",
+    () => {
+
+        generate();
+
+    }
+);
+
+
+// ==========================================
+// GENERATE BOTH
+// ==========================================
+
+async function generate() {
 
     if (!imageData) {
 
@@ -417,44 +380,38 @@ async function generate(
 
     }
 
-
-    setLoading(
-        true
-    );
-
+    setLoading(true);
 
     try {
 
         const result =
-            await generateCaption(
-                imageData,
-                type
+            await generateCaptions(
+                imageData
             );
 
+        reelsResult.value =
+            result.reels;
 
-        resultText.value =
-            result;
-
+        facebookResult.value =
+            result.facebook;
 
         resultSection.classList.remove(
             "hidden"
         );
-
 
         resultSection.scrollIntoView({
             behavior:
                 "smooth"
         });
 
-
     }
 
     catch (error) {
 
         console.error(
+            "Caption generation error:",
             error
         );
-
 
         alert(
             error.message ||
@@ -465,9 +422,7 @@ async function generate(
 
     finally {
 
-        setLoading(
-            false
-        );
+        setLoading(false);
 
     }
 
@@ -488,12 +443,7 @@ function setLoading(
             "hidden"
         );
 
-
-        reelsBtn.disabled =
-            true;
-
-
-        facebookBtn.disabled =
+        generateBtn.disabled =
             true;
 
     }
@@ -504,12 +454,7 @@ function setLoading(
             "hidden"
         );
 
-
-        reelsBtn.disabled =
-            false;
-
-
-        facebookBtn.disabled =
+        generateBtn.disabled =
             false;
 
     }
@@ -518,58 +463,99 @@ function setLoading(
 
 
 // ==========================================
-// COPY
+// COPY REELS
 // ==========================================
 
-copyBtn.addEventListener(
+copyReelsBtn.addEventListener(
     "click",
     async () => {
 
-        if (
-            !resultText.value
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            await navigator.clipboard.writeText(
-                resultText.value
-            );
-
-
-            const oldText =
-                copyBtn.textContent;
-
-
-            copyBtn.textContent =
-                "✅ คัดลอกแล้ว";
-
-
-            setTimeout(
-                () => {
-
-                    copyBtn.textContent =
-                        oldText;
-
-                },
-                1500
-            );
-
-        }
-
-        catch {
-
-            resultText.select();
-
-            document.execCommand(
-                "copy"
-            );
-
-        }
+        await copyText(
+            reelsResult,
+            copyReelsBtn
+        );
 
     }
 );
+
+
+// ==========================================
+// COPY FACEBOOK
+// ==========================================
+
+copyFacebookBtn.addEventListener(
+    "click",
+    async () => {
+
+        await copyText(
+            facebookResult,
+            copyFacebookBtn
+        );
+
+    }
+);
+
+
+// ==========================================
+// COPY TEXT
+// ==========================================
+
+async function copyText(
+    textarea,
+    button
+) {
+
+    if (!textarea.value) {
+
+        return;
+
+    }
+
+    const oldText =
+        button.textContent;
+
+    try {
+
+        await navigator.clipboard.writeText(
+            textarea.value
+        );
+
+        button.textContent =
+            "✅ คัดลอกแล้ว";
+
+        setTimeout(
+            () => {
+
+                button.textContent =
+                    oldText;
+
+            },
+            1500
+        );
+
+    }
+
+    catch {
+
+        textarea.select();
+
+        document.execCommand(
+            "copy"
+        );
+
+        button.textContent =
+            "✅ คัดลอกแล้ว";
+
+        setTimeout(
+            () => {
+
+                button.textContent =
+                    oldText;
+
+            },
+            1500
+        );
+
+    }
+
+}
