@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 
 <head>
 
@@ -7,24 +7,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="PostAI ช่วยสร้างแคปชัน Affiliate จากรูปสินค้า">
+    <meta name="description" content="PostAI creates AI-powered affiliate captions from product images.">
 
-    <title>
-        PostAI — AI Caption Generator
-    </title>
+    <title>PostAI — AI Caption Generator</title>
 
     <link rel="stylesheet" href="./style.css">
 
 </head>
 
-
 <body>
 
     <main class="app">
 
-        <!-- ================================= -->
         <!-- HEADER -->
-        <!-- ================================= -->
 
         <header class="header">
 
@@ -39,87 +34,77 @@
         </header>
 
 
-        <!-- ================================= -->
         <!-- HERO -->
-        <!-- ================================= -->
 
         <section class="hero">
 
             <span class="badge">
-                ✨ Gemini 2.5 Flash
+                ✨ Gemini 3.6 Flash
             </span>
 
             <h1>
-                เปลี่ยนรูปสินค้า<br>
-                ให้กลายเป็นแคปชันน่ากด
+                Turn product images<br>
+                into captions that convert
             </h1>
 
             <p>
-                วางรูปสินค้า แล้วให้ AI
-                ช่วยคิดทั้ง Reel และ Facebook
+                Upload a product image and let AI create
+                engaging captions for Reels and Facebook.
             </p>
 
         </section>
 
 
-        <!-- ================================= -->
         <!-- UPLOAD -->
-        <!-- ================================= -->
 
         <section id="dropZone" class="upload-card">
 
             <input id="imageInput" type="file" accept="image/*" hidden>
 
-
             <div class="upload-icon">
                 🖼️
             </div>
 
-
             <h2>
-                ใส่รูปสินค้า
+                Upload Product Image
             </h2>
 
-
             <p>
-                คลิกเพื่อเลือกรูป
-                หรือวางรูปด้วย Ctrl + V
+                Click to choose an image<br>
+                or paste one with Ctrl + V
             </p>
 
-
             <button type="button" class="secondary-btn" onclick="document.getElementById('imageInput').click()">
-                📁 เลือกรูป
+                📁 Choose Image
             </button>
 
-
             <div class="upload-hint">
-                รองรับ JPG, PNG, WEBP
+                JPG, PNG, and WEBP supported
             </div>
 
         </section>
 
 
-        <!-- ================================= -->
         <!-- PREVIEW -->
-        <!-- ================================= -->
 
         <section id="previewSection" class="section hidden">
 
             <div class="section-title">
 
                 <div>
+
                     <span>
                         👀
                     </span>
 
                     <h2>
-                        รูปสินค้า
+                        Product Image
                     </h2>
+
                 </div>
 
-
                 <button id="removeImageBtn" class="remove-btn" type="button">
-                    ลบรูป
+                    Remove Image
                 </button>
 
             </div>
@@ -127,34 +112,29 @@
 
             <div class="preview-card">
 
-                <img id="previewImage" alt="ตัวอย่างรูปสินค้า">
+                <img id="previewImage" alt="Product image preview">
 
             </div>
 
         </section>
 
 
-        <!-- ================================= -->
         <!-- ACTION -->
-        <!-- ================================= -->
 
         <section id="actionsSection" class="action-section hidden">
 
             <button id="generateBtn" class="generate-btn" type="button">
-                ✨ สร้างแคปชัน
+                ✨ Generate Captions
             </button>
 
-
             <p class="action-hint">
-                กดครั้งเดียว ได้ทั้ง Reel + Facebook
+                One click generates captions for both Reels and Facebook
             </p>
 
         </section>
 
 
-        <!-- ================================= -->
         <!-- LOADING -->
-        <!-- ================================= -->
 
         <section id="loadingSection" class="loading-card hidden">
 
@@ -163,11 +143,11 @@
             <div>
 
                 <strong>
-                    Gemini กำลังดูรูป...
+                    Gemini is analyzing your image...
                 </strong>
 
                 <span>
-                    กำลังวิเคราะห์สินค้าและเขียนแคปชัน
+                    Analyzing the product and creating your captions
                 </span>
 
             </div>
@@ -175,32 +155,28 @@
         </section>
 
 
-        <!-- ================================= -->
         <!-- RESULTS -->
-        <!-- ================================= -->
 
         <section id="resultSection" class="results hidden">
 
             <div class="result-heading">
 
                 <span class="badge">
-                    🎉 เสร็จแล้ว
+                    🎉 Ready
                 </span>
 
                 <h2>
-                    แคปชันพร้อมใช้
+                    Your Captions Are Ready
                 </h2>
 
                 <p>
-                    เลือกคัดลอกไปใช้ได้เลย
+                    Copy and use them wherever you need.
                 </p>
 
             </div>
 
 
-            <!-- ============================= -->
             <!-- REELS -->
-            <!-- ============================= -->
 
             <article class="result-card">
 
@@ -215,11 +191,11 @@
                         <div>
 
                             <h3>
-                                Reel
+                                Reels
                             </h3>
 
                             <span>
-                                สำหรับคลิปสั้น
+                                Short-form video caption
                             </span>
 
                         </div>
@@ -228,21 +204,19 @@
 
 
                     <button id="copyReelsBtn" class="copy-btn" type="button">
-                        📋 คัดลอก
+                        📋 Copy
                     </button>
 
                 </div>
 
 
                 <textarea id="reelsResult" class="result-text" readonly
-                    placeholder="แคปชัน Reel จะปรากฏตรงนี้..."></textarea>
+                    placeholder="Your Reels caption will appear here..."></textarea>
 
             </article>
 
 
-            <!-- ============================= -->
             <!-- FACEBOOK -->
-            <!-- ============================= -->
 
             <article class="result-card">
 
@@ -261,7 +235,7 @@
                             </h3>
 
                             <span>
-                                สำหรับโพสต์
+                                Social media post caption
                             </span>
 
                         </div>
@@ -270,23 +244,21 @@
 
 
                     <button id="copyFacebookBtn" class="copy-btn" type="button">
-                        📋 คัดลอก
+                        📋 Copy
                     </button>
 
                 </div>
 
 
                 <textarea id="facebookResult" class="result-text" readonly
-                    placeholder="แคปชัน Facebook จะปรากฏตรงนี้..."></textarea>
+                    placeholder="Your Facebook caption will appear here..."></textarea>
 
             </article>
 
         </section>
 
 
-        <!-- ================================= -->
         <!-- FOOTER -->
-        <!-- ================================= -->
 
         <footer class="footer">
 
@@ -299,7 +271,7 @@
             </span>
 
             <span>
-                Powered by Gemini
+                Powered by Gemini 3.6 Flash
             </span>
 
         </footer>

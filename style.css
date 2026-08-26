@@ -1,17 +1,16 @@
 /* ==========================================
    PostAI
-   Mobile First UI
+   Modern AI SaaS UI
+   Mobile First
    ========================================== */
 
 * {
     box-sizing: border-box;
 }
 
-
 html {
     scroll-behavior: smooth;
 }
-
 
 body {
     margin: 0;
@@ -26,13 +25,15 @@ body {
         sans-serif;
 
     background:
+        radial-gradient(circle at 50% -10%,
+            rgba(99, 102, 241, 0.12),
+            transparent 38%),
         linear-gradient(180deg,
-            #f7f8fc 0%,
-            #eef1f8 100%);
+            #f8f9fd 0%,
+            #eef1f7 100%);
 
     color: #171923;
 }
-
 
 button,
 textarea,
@@ -40,9 +41,9 @@ input {
     font: inherit;
 }
 
-
 button {
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -51,14 +52,11 @@ button {
    ========================================== */
 
 .app {
-    width: min(100% - 32px,
-            760px);
+    width: min(calc(100% - 32px), 760px);
 
-    margin:
-        0 auto;
+    margin: 0 auto;
 
-    padding:
-        24px 0 40px;
+    padding: 24px 0 42px;
 }
 
 
@@ -72,22 +70,21 @@ button {
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 38px;
+    margin-bottom: 42px;
 }
-
 
 .logo {
-    font-size: 21px;
-    font-weight: 800;
-
-    letter-spacing: -0.5px;
+    font-size: 22px;
+    font-weight: 850;
+    letter-spacing: -0.8px;
 }
 
-
 .subtitle {
-    font-size: 13px;
+    font-size: 12px;
 
-    color: #777b89;
+    color: #858996;
+
+    font-weight: 600;
 }
 
 
@@ -96,114 +93,104 @@ button {
    ========================================== */
 
 .hero {
-    margin-bottom: 28px;
+    margin-bottom: 30px;
 }
-
 
 .badge {
     display: inline-flex;
 
     align-items: center;
+    justify-content: center;
 
-    padding:
-        7px 11px;
+    padding: 7px 12px;
 
-    border-radius:
-        999px;
+    border: 1px solid rgba(99, 102, 241, 0.12);
 
-    background:
-        #eceeff;
+    border-radius: 999px;
 
-    color:
-        #5d5ee8;
+    background: rgba(99, 102, 241, 0.08);
 
-    font-size:
-        12px;
+    color: #5b5fe8;
 
-    font-weight:
-        700;
+    font-size: 12px;
+    font-weight: 750;
 }
-
 
 .hero h1 {
-    margin:
-        16px 0 12px;
+    margin: 17px 0 13px;
 
-    font-size:
-        clamp(31px,
-            8vw,
-            48px);
+    font-size: clamp(32px, 8.5vw, 50px);
 
-    line-height:
-        1.12;
+    line-height: 1.08;
 
-    letter-spacing:
-        -1.5px;
+    letter-spacing: -1.9px;
+
+    font-weight: 850;
 }
-
 
 .hero p {
     margin: 0;
 
-    color:
-        #747887;
+    max-width: 560px;
 
-    font-size:
-        15px;
+    color: #737887;
 
-    line-height:
-        1.7;
+    font-size: 15px;
+
+    line-height: 1.7;
 }
 
 
 /* ==========================================
-   UPLOAD
+   UPLOAD CARD
    ========================================== */
 
 .upload-card {
-    padding:
-        34px 22px;
+    position: relative;
 
-    text-align:
-        center;
+    padding: 38px 22px;
 
-    background:
-        rgba(255,
-            255,
-            255,
-            0.82);
+    text-align: center;
 
-    border:
-        1px solid rgba(0,
-            0,
-            0,
-            0.07);
+    background: rgba(255, 255, 255, 0.88);
 
-    border-radius:
-        24px;
+    border: 1px solid rgba(30, 35, 60, 0.07);
+
+    border-radius: 26px;
 
     box-shadow:
-        0 12px 40px rgba(30,
-            35,
-            60,
-            0.07);
+        0 18px 55px rgba(35, 40, 70, 0.08);
 
     transition:
-        0.2s ease;
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+.upload-card:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(99, 102, 241, 0.2);
+
+    box-shadow:
+        0 22px 65px rgba(35, 40, 70, 0.11);
+}
 
 .upload-card.dragover {
-    transform:
-        scale(1.01);
+    transform: scale(1.01);
 
-    border-color:
-        #6768f2;
+    border-color: #6366f1;
 
-    background:
-        #f4f4ff;
+    background: #f5f5ff;
+
+    box-shadow:
+        0 20px 60px rgba(99, 102, 241, 0.12);
 }
 
+
+/* ==========================================
+   UPLOAD ICON
+   ========================================== */
 
 .upload-icon {
     display: flex;
@@ -211,67 +198,59 @@ button {
     align-items: center;
     justify-content: center;
 
-    width:
-        68px;
+    width: 72px;
+    height: 72px;
 
-    height:
-        68px;
+    margin: 0 auto 18px;
 
-    margin:
-        0 auto 16px;
-
-    border-radius:
-        20px;
+    border-radius: 21px;
 
     background:
-        #f0f1ff;
+        linear-gradient(145deg,
+            #f0f1ff,
+            #e8eaff);
 
-    font-size:
-        30px;
+    border: 1px solid rgba(99, 102, 241, 0.08);
+
+    font-size: 31px;
+
+    box-shadow:
+        0 8px 20px rgba(70, 75, 150, 0.07);
 }
-
 
 .upload-card h2 {
-    margin:
-        0 0 8px;
+    margin: 0 0 8px;
 
-    font-size:
-        21px;
+    font-size: 21px;
+
+    letter-spacing: -0.4px;
 }
-
 
 .upload-card p {
-    margin:
-        0 auto 20px;
+    margin: 0 auto 22px;
 
-    max-width:
-        360px;
+    max-width: 370px;
 
-    color:
-        #777b89;
+    color: #7b7f8d;
 
-    font-size:
-        14px;
+    font-size: 14px;
 
-    line-height:
-        1.6;
+    line-height: 1.65;
 }
 
-
 .upload-hint {
-    margin-top:
-        14px;
+    margin-top: 15px;
 
-    color:
-        #a0a3ae;
+    color: #a0a4b0;
 
-    font-size:
-        11px;
+    font-size: 11px;
+
+    font-weight: 600;
 }
 
 
 /* ==========================================
-   BUTTONS
+   BUTTON BASE
    ========================================== */
 
 .secondary-btn,
@@ -279,75 +258,45 @@ button {
 .copy-btn,
 .remove-btn {
     border: 0;
-}
-
-
-.secondary-btn {
-    padding:
-        11px 18px;
-
-    border-radius:
-        12px;
-
-    background:
-        #171923;
-
-    color:
-        #ffffff;
-
-    font-weight:
-        700;
-}
-
-
-.generate-btn {
-    width:
-        100%;
-
-    padding:
-        17px 20px;
-
-    border-radius:
-        16px;
-
-    background:
-        #171923;
-
-    color:
-        white;
-
-    font-size:
-        16px;
-
-    font-weight:
-        800;
-
-    box-shadow:
-        0 10px 24px rgba(23,
-            25,
-            35,
-            0.18);
 
     transition:
-        0.2s ease;
+        transform 0.18s ease,
+        opacity 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
 }
 
 
-.generate-btn:hover {
-    transform:
-        translateY(-1px);
+/* ==========================================
+   SECONDARY BUTTON
+   ========================================== */
+
+.secondary-btn {
+    padding: 12px 19px;
+
+    border-radius: 13px;
+
+    background: #171923;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+    box-shadow:
+        0 7px 18px rgba(23, 25, 35, 0.13);
 }
 
+.secondary-btn:hover {
+    transform: translateY(-1px);
 
-.generate-btn:disabled {
-    opacity:
-        0.55;
+    box-shadow:
+        0 10px 23px rgba(23, 25, 35, 0.18);
+}
 
-    cursor:
-        not-allowed;
-
-    transform:
-        none;
+.secondary-btn:active {
+    transform: translateY(0);
 }
 
 
@@ -356,29 +305,21 @@ button {
    ========================================== */
 
 .section {
-    margin-top:
-        28px;
+    margin-top: 30px;
 }
-
 
 .action-section {
-    margin-top:
-        20px;
+    margin-top: 20px;
 }
 
-
 .action-hint {
-    margin:
-        10px 0 0;
+    margin: 11px 0 0;
 
-    text-align:
-        center;
+    text-align: center;
 
-    color:
-        #898c97;
+    color: #898d99;
 
-    font-size:
-        12px;
+    font-size: 12px;
 }
 
 
@@ -392,43 +333,43 @@ button {
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom:
-        12px;
+    margin-bottom: 13px;
 }
-
 
 .section-title>div {
     display: flex;
 
     align-items: center;
 
-    gap: 8px;
+    gap: 9px;
 }
-
 
 .section-title h2 {
     margin: 0;
 
-    font-size:
-        18px;
+    font-size: 18px;
+
+    letter-spacing: -0.3px;
 }
 
-
 .remove-btn {
-    padding:
-        7px 11px;
+    padding: 8px 12px;
 
-    border-radius:
-        9px;
+    border-radius: 10px;
 
-    background:
-        #f1f1f4;
+    background: rgba(30, 35, 50, 0.06);
 
-    color:
-        #777;
+    color: #737783;
 
-    font-size:
-        12px;
+    font-size: 12px;
+
+    font-weight: 650;
+}
+
+.remove-btn:hover {
+    background: rgba(220, 70, 70, 0.08);
+
+    color: #c44b4b;
 }
 
 
@@ -437,38 +378,78 @@ button {
    ========================================== */
 
 .preview-card {
-    overflow:
-        hidden;
+    overflow: hidden;
 
-    border-radius:
-        20px;
+    border-radius: 22px;
 
-    background:
-        #ffffff;
+    background: #ffffff;
 
-    border:
-        1px solid rgba(0,
-            0,
-            0,
-            0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+
+    box-shadow:
+        0 12px 35px rgba(30, 35, 60, 0.07);
+}
+
+.preview-card img {
+    display: block;
+
+    width: 100%;
+
+    max-height: 520px;
+
+    object-fit: contain;
+
+    background: #f5f5f7;
 }
 
 
-.preview-card img {
-    display:
-        block;
+/* ==========================================
+   GENERATE
+   ========================================== */
 
-    width:
-        100%;
+.generate-btn {
+    width: 100%;
 
-    max-height:
-        520px;
+    padding: 17px 20px;
 
-    object-fit:
-        contain;
+    border-radius: 17px;
 
     background:
-        #f5f5f7;
+        linear-gradient(135deg,
+            #171923,
+            #292c3a);
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.2px;
+
+    box-shadow:
+        0 13px 30px rgba(23, 25, 35, 0.2);
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 17px 36px rgba(23, 25, 35, 0.25);
+}
+
+.generate-btn:active {
+    transform: translateY(0);
+}
+
+.generate-btn:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
 }
 
 
@@ -481,83 +462,59 @@ button {
 
     align-items: center;
 
-    gap: 14px;
+    gap: 15px;
 
-    margin-top:
-        22px;
+    margin-top: 22px;
 
-    padding:
-        18px;
+    padding: 17px 18px;
 
-    border-radius:
-        18px;
+    border: 1px solid rgba(99, 102, 241, 0.1);
 
-    background:
-        #ffffff;
+    border-radius: 18px;
 
-    border:
-        1px solid rgba(0,
-            0,
-            0,
-            0.06);
+    background: rgba(255, 255, 255, 0.82);
+
+    box-shadow:
+        0 10px 30px rgba(30, 35, 60, 0.05);
 }
-
 
 .loading-card strong {
-    display:
-        block;
+    display: block;
 
-    margin-bottom:
-        4px;
+    margin-bottom: 4px;
 
-    font-size:
-        14px;
+    font-size: 14px;
 }
-
 
 .loading-card span {
-    display:
-        block;
+    display: block;
 
-    color:
-        #858895;
+    color: #818592;
 
-    font-size:
-        12px;
+    font-size: 12px;
+
+    line-height: 1.5;
 }
-
 
 .spinner {
-    width:
-        26px;
+    flex: 0 0 auto;
 
-    height:
-        26px;
+    width: 27px;
+    height: 27px;
 
-    flex:
-        0 0 auto;
+    border: 3px solid #e5e6ef;
 
-    border:
-        3px solid #e7e7ec;
+    border-top-color: #6366f1;
 
-    border-top-color:
-        #6465e9;
+    border-radius: 50%;
 
-    border-radius:
-        50%;
-
-    animation:
-        spin 0.8s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
-
 @keyframes spin {
-
     to {
-        transform:
-            rotate(360deg);
+        transform: rotate(360deg);
     }
-
 }
 
 
@@ -566,34 +523,27 @@ button {
    ========================================== */
 
 .results {
-    margin-top:
-        42px;
+    margin-top: 38px;
 }
-
 
 .result-heading {
-    margin-bottom:
-        18px;
+    margin-bottom: 20px;
 }
-
 
 .result-heading h2 {
-    margin:
-        12px 0 5px;
+    margin: 14px 0 7px;
 
-    font-size:
-        25px;
+    font-size: 25px;
+
+    letter-spacing: -0.7px;
 }
-
 
 .result-heading p {
     margin: 0;
 
-    color:
-        #81848f;
+    color: #7c808d;
 
-    font-size:
-        13px;
+    font-size: 13px;
 }
 
 
@@ -602,31 +552,19 @@ button {
    ========================================== */
 
 .result-card {
-    overflow:
-        hidden;
+    margin-bottom: 16px;
 
-    margin-bottom:
-        18px;
+    overflow: hidden;
 
-    background:
-        #ffffff;
+    border: 1px solid rgba(30, 35, 60, 0.07);
 
-    border:
-        1px solid rgba(0,
-            0,
-            0,
-            0.07);
+    border-radius: 22px;
 
-    border-radius:
-        20px;
+    background: rgba(255, 255, 255, 0.9);
 
     box-shadow:
-        0 8px 30px rgba(30,
-            35,
-            60,
-            0.05);
+        0 13px 38px rgba(30, 35, 60, 0.06);
 }
-
 
 .result-header {
     display: flex;
@@ -636,10 +574,8 @@ button {
 
     gap: 12px;
 
-    padding:
-        16px 16px 12px;
+    padding: 17px 17px 13px;
 }
-
 
 .result-header>div {
     display: flex;
@@ -649,107 +585,109 @@ button {
     gap: 10px;
 }
 
-
 .result-icon {
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    width:
-        38px;
+    width: 39px;
+    height: 39px;
 
-    height:
-        38px;
+    flex: 0 0 auto;
 
-    border-radius:
-        11px;
+    border-radius: 12px;
 
-    background:
-        #f1f2ff;
+    background: #f1f2f8;
 
-    font-size:
-        18px;
+    font-size: 18px;
 }
-
 
 .result-header h3 {
-    margin: 0;
+    margin: 0 0 2px;
 
-    font-size:
-        15px;
+    font-size: 15px;
 }
-
 
 .result-header span {
-    color:
-        #9295a0;
+    color: #8a8e9b;
 
-    font-size:
-        11px;
+    font-size: 11px;
 }
 
+
+/* ==========================================
+   COPY BUTTON
+   ========================================== */
 
 .copy-btn {
-    padding:
-        8px 11px;
+    flex: 0 0 auto;
 
-    border-radius:
-        9px;
+    padding: 8px 11px;
 
-    background:
-        #f1f1f5;
+    border-radius: 10px;
 
-    color:
-        #555864;
+    background: #f0f1f6;
 
-    font-size:
-        12px;
+    color: #5f6370;
 
-    font-weight:
-        700;
+    font-size: 11px;
 
-    white-space:
-        nowrap;
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+.copy-btn:hover {
+    background: #e7e8f0;
+
+    color: #171923;
+}
+
+.copy-btn:active {
+    transform: scale(0.97);
 }
 
 
+/* ==========================================
+   RESULT TEXT
+   ========================================== */
+
 .result-text {
-    display:
-        block;
+    display: block;
 
-    width:
-        100%;
+    width: calc(100% - 34px);
 
-    min-height:
-        320px;
+    min-height: 270px;
 
-    padding:
-        16px;
+    margin: 0 17px 17px;
 
-    border:
-        0;
+    padding: 15px;
 
-    border-top:
-        1px solid #eeeeF2;
+    resize: vertical;
 
-    outline:
-        none;
+    border: 1px solid rgba(30, 35, 60, 0.07);
 
-    resize:
-        vertical;
+    border-radius: 15px;
 
-    background:
-        #ffffff;
+    outline: none;
 
-    color:
-        #272936;
+    background: #f8f9fc;
 
-    font-size:
-        14px;
+    color: #292c36;
 
-    line-height:
-        1.75;
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+.result-text:focus {
+    border-color: rgba(99, 102, 241, 0.35);
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.07);
 }
 
 
@@ -763,16 +701,15 @@ button {
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
+    gap: 8px;
 
-    margin-top:
-        40px;
+    margin-top: 45px;
 
-    color:
-        #a0a2ac;
+    color: #9a9daa;
 
-    font-size:
-        11px;
+    font-size: 11px;
+
+    font-weight: 600;
 }
 
 
@@ -781,8 +718,40 @@ button {
    ========================================== */
 
 .hidden {
-    display:
-        none !important;
+    display: none !important;
+}
+
+
+/* ==========================================
+   DESKTOP
+   ========================================== */
+
+@media (min-width: 640px) {
+
+    .app {
+        padding-top: 34px;
+    }
+
+    .header {
+        margin-bottom: 55px;
+    }
+
+    .hero {
+        margin-bottom: 36px;
+    }
+
+    .upload-card {
+        padding: 48px 30px;
+    }
+
+    .action-section {
+        margin-top: 24px;
+    }
+
+    .result-text {
+        min-height: 300px;
+    }
+
 }
 
 
@@ -793,90 +762,96 @@ button {
 @media (max-width: 520px) {
 
     .app {
-        width:
-            min(100% - 22px,
-                760px);
+        width: min(calc(100% - 22px), 760px);
 
-        padding-top:
-            18px;
+        padding-top: 18px;
     }
-
 
     .header {
-        margin-bottom:
-            28px;
+        margin-bottom: 28px;
     }
-
 
     .logo {
-        font-size:
-            19px;
+        font-size: 19px;
     }
-
 
     .subtitle {
-        font-size:
-            11px;
+        font-size: 11px;
     }
-
 
     .hero h1 {
-        font-size:
-            32px;
+        font-size: 32px;
 
-        letter-spacing:
-            -1px;
+        letter-spacing: -1px;
     }
-
 
     .hero p {
-        font-size:
-            14px;
+        font-size: 14px;
     }
-
 
     .upload-card {
-        padding:
-            30px 16px;
+        padding: 30px 16px;
 
-        border-radius:
-            20px;
+        border-radius: 20px;
     }
-
 
     .preview-card {
-        border-radius:
-            16px;
+        border-radius: 16px;
     }
-
 
     .result-card {
-        border-radius:
-            17px;
+        border-radius: 17px;
     }
-
 
     .result-header {
-        padding:
-            13px;
+        padding: 13px;
     }
-
 
     .result-text {
-        min-height:
-            350px;
+        width: calc(100% - 26px);
 
-        padding:
-            14px;
+        min-height: 320px;
 
-        font-size:
-            13.5px;
+        margin: 0 13px 13px;
+
+        padding: 14px;
+
+        font-size: 13.5px;
     }
 
+    .copy-btn {
+        padding: 7px 9px;
+    }
+
+}
+
+
+/* ==========================================
+   SMALL MOBILE
+   ========================================== */
+
+@media (max-width: 380px) {
+
+    .app {
+        width: calc(100% - 18px);
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .result-header h3 {
+        font-size: 14px;
+    }
+
+    .result-header span {
+        font-size: 10px;
+    }
 
     .copy-btn {
-        padding:
-            7px 9px;
+        padding: 7px 8px;
+
+        font-size: 10px;
     }
 
 }
