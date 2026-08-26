@@ -77,9 +77,6 @@ const copyBtn =
 // STATE
 // ==========================================
 
-let selectedFile =
-    null;
-
 let imageData =
     null;
 
@@ -88,31 +85,24 @@ let imageData =
 // FILE SELECT
 // ==========================================
 
-if (imageInput) {
+imageInput?.addEventListener(
+    "change",
+    event => {
 
-    imageInput.addEventListener(
-        "change",
-        event => {
-
-            const file =
-                event.target.files?.[0];
+        const file =
+            event.target.files?.[0];
 
 
-            if (!file) {
-
-                return;
-
-            }
-
+        if (file) {
 
             loadImage(
                 file
             );
 
         }
-    );
 
-}
+    }
+);
 
 
 // ==========================================
@@ -123,19 +113,8 @@ document.addEventListener(
     "paste",
     event => {
 
-        const clipboardData =
-            event.clipboardData;
-
-
-        if (!clipboardData) {
-
-            return;
-
-        }
-
-
         const items =
-            clipboardData.items;
+            event.clipboardData?.items;
 
 
         if (!items) {
@@ -150,7 +129,6 @@ document.addEventListener(
         ) {
 
             if (
-                item.type &&
                 item.type.startsWith(
                     "image/"
                 )
@@ -160,19 +138,15 @@ document.addEventListener(
                     item.getAsFile();
 
 
-                if (!file) {
+                if (file) {
 
-                    return;
+                    loadImage(
+                        file
+                    );
+
+                    event.preventDefault();
 
                 }
-
-
-                loadImage(
-                    file
-                );
-
-
-                event.preventDefault();
 
 
                 return;
@@ -189,83 +163,67 @@ document.addEventListener(
 // DRAG OVER
 // ==========================================
 
-if (dropZone) {
+dropZone?.addEventListener(
+    "dragover",
+    event => {
 
-    dropZone.addEventListener(
-        "dragover",
-        event => {
+        event.preventDefault();
 
-            event.preventDefault();
+        dropZone.classList.add(
+            "dragover"
+        );
 
-
-            dropZone.classList.add(
-                "dragover"
-            );
-
-        }
-    );
-
-}
+    }
+);
 
 
 // ==========================================
 // DRAG LEAVE
 // ==========================================
 
-if (dropZone) {
+dropZone?.addEventListener(
+    "dragleave",
+    () => {
 
-    dropZone.addEventListener(
-        "dragleave",
-        () => {
+        dropZone.classList.remove(
+            "dragover"
+        );
 
-            dropZone.classList.remove(
-                "dragover"
-            );
-
-        }
-    );
-
-}
+    }
+);
 
 
 // ==========================================
 // DROP
 // ==========================================
 
-if (dropZone) {
+dropZone?.addEventListener(
+    "drop",
+    event => {
 
-    dropZone.addEventListener(
-        "drop",
-        event => {
-
-            event.preventDefault();
+        event.preventDefault();
 
 
-            dropZone.classList.remove(
-                "dragover"
-            );
+        dropZone.classList.remove(
+            "dragover"
+        );
 
 
-            const file =
-                event.dataTransfer
-                    ?.files?.[0];
+        const file =
+            event.dataTransfer
+                ?.files?.[0];
 
 
-            if (!file) {
-
-                return;
-
-            }
-
+        if (file) {
 
             loadImage(
                 file
             );
 
         }
-    );
 
-}
+    }
+);
 
 
 // ==========================================
@@ -291,10 +249,6 @@ function loadImage(
     }
 
 
-    selectedFile =
-        file;
-
-
     const reader =
         new FileReader();
 
@@ -314,31 +268,19 @@ function loadImage(
             }
 
 
-            if (previewSection) {
-
-                previewSection.classList.remove(
-                    "hidden"
-                );
-
-            }
+            previewSection?.classList.remove(
+                "hidden"
+            );
 
 
-            if (actionsSection) {
-
-                actionsSection.classList.remove(
-                    "hidden"
-                );
-
-            }
+            actionsSection?.classList.remove(
+                "hidden"
+            );
 
 
-            if (resultSection) {
-
-                resultSection.classList.add(
-                    "hidden"
-                );
-
-            }
+            resultSection?.classList.add(
+                "hidden"
+            );
 
 
             if (resultText) {
@@ -347,29 +289,6 @@ function loadImage(
                     "";
 
             }
-
-
-            if (previewSection) {
-
-                previewSection.scrollIntoView({
-                    behavior:
-                        "smooth",
-
-                    block:
-                        "center"
-                });
-
-            }
-
-        };
-
-
-    reader.onerror =
-        () => {
-
-            alert(
-                "ไม่สามารถอ่านรูปภาพได้"
-            );
 
         };
 
@@ -382,121 +301,73 @@ function loadImage(
 
 
 // ==========================================
-// REMOVE IMAGE
+// REMOVE
 // ==========================================
 
-if (removeImageBtn) {
+removeImageBtn?.addEventListener(
+    "click",
+    () => {
 
-    removeImageBtn.addEventListener(
-        "click",
-        () => {
-
-            selectedFile =
-                null;
+        imageData =
+            null;
 
 
-            imageData =
-                null;
+        if (imageInput) {
 
-
-            if (imageInput) {
-
-                imageInput.value =
-                    "";
-
-            }
-
-
-            if (previewImage) {
-
-                previewImage.src =
-                    "";
-
-            }
-
-
-            if (previewSection) {
-
-                previewSection.classList.add(
-                    "hidden"
-                );
-
-            }
-
-
-            if (actionsSection) {
-
-                actionsSection.classList.add(
-                    "hidden"
-                );
-
-            }
-
-
-            if (resultSection) {
-
-                resultSection.classList.add(
-                    "hidden"
-                );
-
-            }
-
-
-            if (resultText) {
-
-                resultText.value =
-                    "";
-
-            }
+            imageInput.value =
+                "";
 
         }
-    );
-
-}
 
 
-// ==========================================
-// REELS BUTTON
-// ==========================================
-//
-// Generate ทั้ง Reel + Facebook
-// ในการกดครั้งเดียว
-//
+        if (previewImage) {
 
-if (reelsBtn) {
-
-    reelsBtn.addEventListener(
-        "click",
-        () => {
-
-            generate();
+            previewImage.src =
+                "";
 
         }
-    );
-
-}
 
 
-// ==========================================
-// FACEBOOK BUTTON
-// ==========================================
-//
-// Generate ทั้ง Reel + Facebook
-// ในการกดครั้งเดียว
-//
+        previewSection?.classList.add(
+            "hidden"
+        );
 
-if (facebookBtn) {
 
-    facebookBtn.addEventListener(
-        "click",
-        () => {
+        actionsSection?.classList.add(
+            "hidden"
+        );
 
-            generate();
+
+        resultSection?.classList.add(
+            "hidden"
+        );
+
+
+        if (resultText) {
+
+            resultText.value =
+                "";
 
         }
-    );
 
-}
+    }
+);
+
+
+// ==========================================
+// GENERATE BUTTONS
+// ==========================================
+
+reelsBtn?.addEventListener(
+    "click",
+    generate
+);
+
+
+facebookBtn?.addEventListener(
+    "click",
+    generate
+);
 
 
 // ==========================================
@@ -529,69 +400,43 @@ async function generate() {
             );
 
 
-        // ==================================
-        // RESULT
-        // ==================================
-
-        const reels =
-            result?.reels ||
-            "ไม่สามารถสร้างแคปชัน Reel ได้";
-
-
-        const facebook =
-            result?.facebook ||
-            "ไม่สามารถสร้าง Facebook Post ได้";
-
-
-        // ==================================
-        // SHOW BOTH
-        // ==================================
-
         if (resultText) {
 
             resultText.value =
                 `🎬 REELS CAPTION
 
-${reels}
+${result.reels}
 
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━
 
 
 📘 FACEBOOK POST
 
-${facebook}`;
+${result.facebook}`;
 
         }
 
 
-        // ==================================
-        // SHOW RESULT
-        // ==================================
-
-        if (resultSection) {
-
-            resultSection.classList.remove(
-                "hidden"
-            );
+        resultSection?.classList.remove(
+            "hidden"
+        );
 
 
-            resultSection.scrollIntoView({
-                behavior:
-                    "smooth",
+        resultSection?.scrollIntoView({
+            behavior:
+                "smooth",
 
-                block:
-                    "start"
-            });
-
-        }
+            block:
+                "start"
+        });
 
     }
 
     catch (error) {
 
         console.error(
-            "PostAI Generate Error:",
+            "PostAI error:",
             error
         );
 
@@ -622,59 +467,24 @@ function setLoading(
     loading
 ) {
 
-    if (loading) {
-
-        if (loadingSection) {
-
-            loadingSection.classList.remove(
-                "hidden"
-            );
-
-        }
+    loadingSection?.classList.toggle(
+        "hidden",
+        !loading
+    );
 
 
-        if (reelsBtn) {
+    if (reelsBtn) {
 
-            reelsBtn.disabled =
-                true;
-
-        }
-
-
-        if (facebookBtn) {
-
-            facebookBtn.disabled =
-                true;
-
-        }
+        reelsBtn.disabled =
+            loading;
 
     }
 
-    else {
 
-        if (loadingSection) {
+    if (facebookBtn) {
 
-            loadingSection.classList.add(
-                "hidden"
-            );
-
-        }
-
-
-        if (reelsBtn) {
-
-            reelsBtn.disabled =
-                false;
-
-        }
-
-
-        if (facebookBtn) {
-
-            facebookBtn.disabled =
-                false;
-
-        }
+        facebookBtn.disabled =
+            loading;
 
     }
 
@@ -685,69 +495,55 @@ function setLoading(
 // COPY
 // ==========================================
 
-if (copyBtn) {
+copyBtn?.addEventListener(
+    "click",
+    async () => {
 
-    copyBtn.addEventListener(
-        "click",
-        async () => {
+        if (
+            !resultText?.value
+        ) {
 
-            if (
-                !resultText ||
-                !resultText.value
-            ) {
-
-                return;
-
-            }
-
-
-            try {
-
-                await navigator.clipboard.writeText(
-                    resultText.value
-                );
-
-
-                const oldText =
-                    copyBtn.textContent;
-
-
-                copyBtn.textContent =
-                    "✅ คัดลอกแล้ว";
-
-
-                setTimeout(
-                    () => {
-
-                        copyBtn.textContent =
-                            oldText;
-
-                    },
-                    1500
-                );
-
-            }
-
-            catch (
-            error
-            ) {
-
-                console.error(
-                    "Copy error:",
-                    error
-                );
-
-
-                resultText.select();
-
-
-                document.execCommand(
-                    "copy"
-                );
-
-            }
+            return;
 
         }
-    );
 
-}
+
+        try {
+
+            await navigator.clipboard.writeText(
+                resultText.value
+            );
+
+
+            const oldText =
+                copyBtn.textContent;
+
+
+            copyBtn.textContent =
+                "✅ คัดลอกแล้ว";
+
+
+            setTimeout(
+                () => {
+
+                    copyBtn.textContent =
+                        oldText;
+
+                },
+                1500
+            );
+
+        }
+
+        catch {
+
+            resultText.select();
+
+            document.execCommand(
+                "copy"
+            );
+
+        }
+
+    }
+);

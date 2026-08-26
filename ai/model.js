@@ -1,7 +1,7 @@
 // ==========================================
 // PostAI
-// Qwen2.5-VL-3B Vision Model
-// Client-side only
+// Vision Model
+// Client-side
 // ==========================================
 
 import {
@@ -14,17 +14,8 @@ import {
 // CONFIG
 // ==========================================
 
-// ONNX checkpoint hosted on Hugging Face.
-// The model files are downloaded by the browser.
-// The image itself is processed locally.
-
 const MODEL_NAME =
-    "huggingworld/Qwen2.5-VL-3B-Instruct-ONNX";
-
-
-// ==========================================
-// ENVIRONMENT
-// ==========================================
+    "HuggingFaceTB/SmolVLM-256M-Instruct";
 
 env.allowLocalModels =
     false;
@@ -58,7 +49,6 @@ export async function loadVisionModel(
 
     }
 
-
     if (loadingPromise) {
 
         return loadingPromise;
@@ -67,8 +57,35 @@ export async function loadVisionModel(
 
 
     loadingPromise =
-        createPipeline(
-            onProgress
+        pipeline(
+            "image-text-to-text",
+            MODEL_NAME,
+            {
+
+                device:
+                    "webgpu",
+
+                dtype:
+                    "q4",
+
+                progress_callback:
+                    progress => {
+
+                        if (
+                            onProgress &&
+                            typeof progress?.progress ===
+                            "number"
+                        ) {
+
+                            onProgress(
+                                progress.progress
+                            );
+
+                        }
+
+                    }
+
+            }
         );
 
 
@@ -85,17 +102,11 @@ export async function loadVisionModel(
     catch (error) {
 
         console.error(
-            "Qwen Vision loading error:",
+            "Vision model error:",
             error
         );
 
-        throw new Error(
-            "ไม่สามารถโหลด Qwen Vision Model ได้: " +
-            (
-                error?.message ||
-                error
-            )
-        );
+        throw error;
 
     }
 
@@ -110,64 +121,6 @@ export async function loadVisionModel(
 
 
 // ==========================================
-// CREATE PIPELINE
-// ==========================================
-
-async function createPipeline(
-    onProgress
-) {
-
-    // IMPORTANT:
-    // We intentionally use the task declared
-    // by the current ONNX checkpoint.
-
-    const pipe =
-        await pipeline(
-            "image-text-to-image",
-            MODEL_NAME,
-            {
-
-                device:
-                    "webgpu",
-
-                dtype:
-                    "q4f16",
-
-                progress_callback:
-                    progress => {
-
-                        if (
-                            !onProgress
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        if (
-                            typeof progress?.progress
-                            === "number"
-                        ) {
-
-                            onProgress(
-                                progress.progress
-                            );
-
-                        }
-
-                    }
-
-            }
-        );
-
-
-    return pipe;
-
-}
-
-
-// ==========================================
 // ANALYZE IMAGE
 // ==========================================
 
@@ -175,49 +128,30 @@ export async function analyzeImage(
     imageSource
 ) {
 
-    if (!imageSource) {
-
-        throw new Error(
-            "ไม่พบรูปสินค้า"
-        );
-
-    }
-
-
     const model =
         await loadVisionModel();
 
 
-    // ======================================
-    // PRODUCT ANALYSIS PROMPT
-    // ======================================
-
     const prompt = `
-Analyze this product screenshot carefully.
+อ่านข้อความและรายละเอียดจากภาพสินค้านี้อย่างละเอียด
 
-Extract ONLY information that is actually visible
-or clearly readable in the image.
+ดึงเฉพาะข้อมูลที่มองเห็นหรืออ่านข้อความได้จริง
 
-Focus on:
+ต้องการข้อมูล:
+- ประเภทสินค้า
+- รายละเอียดสินค้า
+- ขนาดหรือความจุ
+- จำนวน
+- ฟังก์ชัน
+- จุดเด่น
+- วิธีใช้งาน
+- เหมาะกับใคร
 
-1. Product type
-2. Product purpose
-3. Size / volume / capacity
-4. Quantity / number of pieces
-5. Important functions
-6. Visible product features
-7. How the product is used
-8. Who the product is suitable for
+ห้ามแต่งข้อมูลที่ไม่มีในภาพ
+ห้ามเดาราคา
+ห้ามเดาชื่อแบรนด์
 
-Do NOT invent information.
-
-Do NOT guess prices.
-
-Do NOT invent brand names.
-
-Return the information clearly in Thai.
-
-Use this format:
+ตอบเป็นภาษาไทยตามรูปแบบ:
 
 ประเภทสินค้า:
 รายละเอียด:
@@ -227,109 +161,93 @@ Use this format:
 จุดเด่น:
 การใช้งาน:
 เหมาะกับใคร:
-
-If something cannot be read from the image,
-leave it blank.
 `;
 
 
-    try {
+    const result =
+        await model(
+            imageSource,
+            {
+                text:
+                    prompt,
 
-        const result =
-            await model(
-                imageSource,
-                {
-                    text:
-                        prompt,
+                max_new_tokens:
+                    500,
 
-                    max_new_tokens:
-                        500,
+                do_sample:
+                    false
 
-                    do_sample:
-                        false
-
-                }
-            );
-
-
-        console.log(
-            "Qwen raw result:",
-            result
+            }
         );
 
 
-        return parseModelResult(
-            result
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Qwen image analysis error:",
-            error
-        );
+    console.log(
+        "Vision result:",
+        result
+    );
 
 
-        throw new Error(
-            "Qwen ไม่สามารถวิเคราะห์รูปภาพได้: " +
-            (
-                error?.message ||
-                error
-            )
-        );
-
-    }
+    return parseResult(
+        result
+    );
 
 }
 
 
 // ==========================================
-// PARSE MODEL RESULT
+// PARSE RESULT
 // ==========================================
 
-function parseModelResult(
+function parseResult(
     result
 ) {
 
-    let text =
-        extractText(
+    let text = "";
+
+
+    if (
+        Array.isArray(result)
+    ) {
+
+        text =
             result
-        );
+                .map(
+                    item =>
+                        item?.generated_text ||
+                        item?.text ||
+                        ""
+                )
+                .filter(Boolean)
+                .join("\n");
 
+    }
 
-    if (!text) {
+    else if (
+        typeof result === "string"
+    ) {
 
-        return {
+        text =
+            result;
 
-            type: "",
+    }
 
-            description: "",
+    else {
 
-            size: "",
-
-            quantity: "",
-
-            features: [],
-
-            usage: "",
-
-            suitableFor: "",
-
-            raw: ""
-
-        };
+        text =
+            result?.generated_text ||
+            result?.text ||
+            "";
 
     }
 
 
     text =
-        text.trim();
+        String(text)
+            .trim();
 
 
     console.log(
-        "Qwen extracted text:",
+        "Vision text:",
         text
     );
 
@@ -337,42 +255,49 @@ function parseModelResult(
     return {
 
         type:
-            extractField(
+            getField(
                 text,
                 "ประเภทสินค้า"
             ),
 
         description:
-            extractField(
+            getField(
                 text,
                 "รายละเอียด"
             ),
 
         size:
-            extractField(
+            getField(
                 text,
                 "ขนาด"
             ),
 
         quantity:
-            extractField(
+            getField(
                 text,
                 "จำนวน"
             ),
 
+        function:
+            getField(
+                text,
+                "ฟังก์ชัน"
+            ),
+
         features:
-            extractFeatures(
-                text
+            getField(
+                text,
+                "จุดเด่น"
             ),
 
         usage:
-            extractField(
+            getField(
                 text,
                 "การใช้งาน"
             ),
 
         suitableFor:
-            extractField(
+            getField(
                 text,
                 "เหมาะกับใคร"
             ),
@@ -386,107 +311,17 @@ function parseModelResult(
 
 
 // ==========================================
-// EXTRACT TEXT
+// FIELD
 // ==========================================
 
-function extractText(
-    result
-) {
-
-    if (!result) {
-
-        return "";
-
-    }
-
-
-    if (
-        typeof result === "string"
-    ) {
-
-        return result;
-
-    }
-
-
-    if (
-        Array.isArray(result)
-    ) {
-
-        return result
-            .map(
-                item => {
-
-                    if (
-                        typeof item ===
-                        "string"
-                    ) {
-
-                        return item;
-
-                    }
-
-
-                    return (
-                        item?.generated_text ||
-                        item?.text ||
-                        ""
-                    );
-
-                }
-            )
-            .filter(Boolean)
-            .join("\n");
-
-    }
-
-
-    if (
-        result.generated_text
-    ) {
-
-        return String(
-            result.generated_text
-        );
-
-    }
-
-
-    if (
-        result.text
-    ) {
-
-        return String(
-            result.text
-        );
-
-    }
-
-
-    return "";
-
-}
-
-
-// ==========================================
-// EXTRACT FIELD
-// ==========================================
-
-function extractField(
+function getField(
     text,
     field
 ) {
 
-    const escaped =
-        field.replace(
-            /[.*+?^${}()|[\]\\]/g,
-            "\\$&"
-        );
-
-
     const regex =
         new RegExp(
-            `${escaped}\\s*[:：]\\s*([^\\n]+)`,
+            `${field}\\s*[:：]\\s*([^\\n]+)`,
             "i"
         );
 
@@ -497,75 +332,15 @@ function extractField(
         );
 
 
-    if (!match) {
-
-        return "";
-
-    }
-
-
-    const value =
-        match[1]
-            .trim();
-
-
-    if (
-        value === "-" ||
-        value === "ไม่พบ" ||
-        value === "ไม่ระบุ"
-    ) {
-
-        return "";
-
-    }
-
-
-    return value;
+    return match
+        ? match[1].trim()
+        : "";
 
 }
 
 
 // ==========================================
-// FEATURES
-// ==========================================
-
-function extractFeatures(
-    text
-) {
-
-    const value =
-        extractField(
-            text,
-            "จุดเด่น"
-        );
-
-
-    if (!value) {
-
-        return [];
-
-    }
-
-
-    return value
-        .split(
-            /[,،|/•]+/
-        )
-        .map(
-            item =>
-                item.trim()
-        )
-        .filter(Boolean)
-        .slice(
-            0,
-            5
-        );
-
-}
-
-
-// ==========================================
-// MODEL STATUS
+// STATUS
 // ==========================================
 
 export function isModelLoaded() {
