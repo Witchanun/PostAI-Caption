@@ -192,13 +192,12 @@ export default async function handler(req, res) {
 15. ห้ามใช้ประโยคซ้ำ ๆ
 16. ใช้อีโมจิอย่างพอดี
 17. ห้ามใส่ราคา
-18. Affiliate Link ต้องอยู่ด้านบน
-19. Reel และ Facebook ต้องเขียนต่างกัน
-20. ต้องเหมาะกับคนไทย
-21. ห้ามพูดว่า "จากภาพ"
-22. ห้ามอธิบายขั้นตอนการวิเคราะห์
-23. ห้ามใส่ Markdown code block
-24. ต้องตอบตามรูปแบบที่กำหนดด้านล่าง
+18. Reel และ Facebook ต้องเขียนต่างกัน
+19. ต้องเหมาะกับคนไทย
+20. ห้ามพูดว่า "จากภาพ"
+21. ห้ามอธิบายขั้นตอนการวิเคราะห์
+22. ห้ามใส่ Markdown code block
+23. ต้องตอบตามรูปแบบที่กำหนดด้านล่าง
 
 สไตล์ REELS:
 
@@ -227,8 +226,6 @@ export default async function handler(req, res) {
 
 === REELS ===
 
-🔗 [แปะ Affiliate Link ตรงนี้]
-
 [Hook]
 
 [รายละเอียดสินค้า]
@@ -244,9 +241,7 @@ export default async function handler(req, res) {
 [Hashtags]
 
 
-=== FACEBOOK ===
-
-🔗 [แปะ Affiliate Link ตรงนี้]
+=== FACEBOOK ===  
 
 [Hook]
 
